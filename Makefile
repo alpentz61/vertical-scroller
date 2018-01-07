@@ -1,8 +1,8 @@
 CC=gcc
 CFLAGS=-I.
 LIBS=-lallegro -lallegro_image
-DEPS = object.h
-OBJ = main.o object.o
+DEPS = game.h object.h map.h
+OBJ = main.o object.o map.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)

@@ -1,6 +1,5 @@
-#include <stdio.h>
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_image.h>
+
+#include "game.h"
 #include "object.h"
 
 //To Build: g++ main.cpp -lallegro -lallegro_image
@@ -8,82 +7,77 @@
 const float FPS = 60;
 const int SCREEN_W = 1280;
 const int SCREEN_H = 800;
-const char* PLAYER_FILE = "images/F35_Sketched_V2_Scaled.png";
-const char* HONEY_POT_FILE = "images";
 enum MYKEYS {
    KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
 };
 
+const char* PLAYER_FILE = "images/F35_Sketched_V2_Scaled.png";
+const char* HONEY_POT_FILE = "images/pumpkin_open_clipart.png";
+
 int main(int argc, char **argv)
 {
+   bool success = false;
    ALLEGRO_DISPLAY *display = NULL;
    ALLEGRO_EVENT_QUEUE *event_queue = NULL;
    ALLEGRO_TIMER *timer = NULL;
    bool key[4] = { false, false, false, false };
    bool redraw = true;
    bool doexit = false;
-
-   Object obj;
+   //Player resource
+   ALLEGRO_BITMAP *player = NULL;
+   const int PLAYER_SIZE = 32;
+   float player_x = SCREEN_W / 2.0 - PLAYER_SIZE / 2.0;
+   float player_y = SCREEN_H / 2.0 - PLAYER_SIZE / 2.0;
 
    //Initialize allegro
    if(!al_init()) {
       fprintf(stderr, "failed to initialize allegro!\n");
-      return -1;
+      goto FAILED;
    }
 
    //Initialize the image addon portion of the library
    if(!al_init_image_addon()) {
       fprintf(stderr, "failed to initialize the image addon!\n");
-      return -1;
+      goto FAILED;
    }
  
    //Initialize the keybaord handler
    if(!al_install_keyboard()) {
       fprintf(stderr, "failed to initialize the keyboard!\n");
-      return -1;
+      goto FAILED;
    }
 
    //Initialize the timer
    timer = al_create_timer(1.0 / FPS);
    if(!timer) {
       fprintf(stderr, "failed to create timer!\n");
-      return -1;
+      goto FAILED;
    }
  
    //Initialize the display
    display = al_create_display(SCREEN_W, SCREEN_H);
    if(!display) {
       fprintf(stderr, "failed to create display!\n");
-      //TODO: Move all destroys to a goto statement at the end
-      al_destroy_timer(timer);
-      return -1;
+      goto FAILED_DISPLAY;
    }
    al_clear_to_color(al_map_rgb(0,0,0));
    al_flip_display();
 
  
-   //Load image resources --- Note: This must be performed after initializing the display
+   //Load image resources --- Note: This must be performed after initializing the displa
+
    //Load the player sprite:
-   ALLEGRO_BITMAP *player = NULL;
-   const int PLAYER_SIZE = 32;
-   float player_x = SCREEN_W / 2.0 - PLAYER_SIZE / 2.0;
-   float player_y = SCREEN_H / 2.0 - PLAYER_SIZE / 2.0;
    player = al_load_bitmap(PLAYER_FILE);
    if (!player){
       fprintf(stderr, "failed to create player bitmap!\n");
-      al_destroy_display(display);
-      al_destroy_timer(timer);
-      return -1;
+      goto FAILED_PLAYER;
    }
 
    //Initialize the event queue
    event_queue = al_create_event_queue();
    if(!event_queue) {
       fprintf(stderr, "failed to create event_queue!\n");
-      al_destroy_bitmap(player);
-      al_destroy_display(display);
-      al_destroy_timer(timer);
-      return -1;
+      goto FAILED_EVENT;
    }
    al_register_event_source(event_queue, al_get_display_event_source(display));
    al_register_event_source(event_queue, al_get_timer_event_source(timer));
@@ -165,17 +159,30 @@ int main(int argc, char **argv)
  
          al_clear_to_color(al_map_rgb(0,0,0));
 
-         al_draw_bitmap(player, player_x, player_y, 0);
- 
+ 	 Object obj;
+	 obj.setBitmapHwnd(player);
+	 obj.x = 0;
+	 obj.y = 0;
+	 obj.render();
+
          al_flip_display();
       }
    }
- 
-   al_destroy_bitmap(player);
-   al_destroy_timer(timer);
-   al_destroy_display(display);
+   success = true;
+
    al_destroy_event_queue(event_queue);
- 
-   return 0;
+FAILED_EVENT:
+   al_destroy_bitmap(player);
+FAILED_PLAYER:
+   al_destroy_display(display);
+FAILED_DISPLAY:
+   al_destroy_timer(timer);
+FAILED:
+   if (success){
+      return 0;
+   }
+   else {
+      return -1;
+   }
 }
 
