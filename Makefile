@@ -1,4 +1,4 @@
-CC=gcc
+CC=g++
 CFLAGS= -I. 
 CXXFLAGS = -g -std=c++11 -Wall -pedantic 
 LIBS=-lallegro -lallegro_image
