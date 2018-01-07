@@ -1,5 +1,6 @@
 CC=gcc
-CFLAGS=-I.
+CFLAGS= -I. 
+CXXFLAGS = -g -std=c++11 -Wall -pedantic 
 LIBS=-lallegro -lallegro_image
 DEPS = game.h object.h map.h
 OBJ = main.o object.o map.o

@@ -9,10 +9,10 @@ public:
 	void render();
 	void setBitmapHwnd(ALLEGRO_BITMAP *bmp_handle);
 	ALLEGRO_BITMAP *bmp_handle;
-	float x;
-	float y;
-	float width;
-	float height;
+	long x;
+	long y;
+	long width;
+	long height;
 };
 
 

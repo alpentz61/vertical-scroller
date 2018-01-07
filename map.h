@@ -4,7 +4,8 @@
 #include "game.h"
 #include "object.h"
 
-//#include <list>
+#include <list>
+#include <array>
 
 //TODO: Use screen constants for this:
 #define ZONE_WIDTH 1280
@@ -15,17 +16,16 @@
 class Map {
 public:
 	Map();
+        bool initialize();
 	void render();
 	void renderZone(int zoneIndex);
 	void renderObject(Object& obj);
 	bool collidedWith(Object& obj);
 	bool collidedWithZone(Object& obj, int zoneIndexc);
 	int getZoneIndex(long worldY);
-	long zoneWidth;
-	long zoneHeight;
 	long screenY;
-	//std::list<Object> objects;
-	//std::list<Object> objects_zoned[NUM_ZONES];
+        //std::list<Object*> objs;
+	//std::array<std::list<Object>,NUM_ZONES> objs_zoned;
 };
 
 #endif

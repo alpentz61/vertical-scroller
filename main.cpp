@@ -1,6 +1,7 @@
 
 #include "game.h"
 #include "object.h"
+#include "map.h"
 
 //To Build: g++ main.cpp -lallegro -lallegro_image
 
@@ -26,8 +27,14 @@ int main(int argc, char **argv)
    //Player resource
    ALLEGRO_BITMAP *player = NULL;
    const int PLAYER_SIZE = 32;
-   float player_x = SCREEN_W / 2.0 - PLAYER_SIZE / 2.0;
-   float player_y = SCREEN_H / 2.0 - PLAYER_SIZE / 2.0;
+   long player_x = SCREEN_W / 2.0 - PLAYER_SIZE / 2.0;
+   long player_y = SCREEN_H / 2.0 - PLAYER_SIZE / 2.0;
+   //Honeypot
+   ALLEGRO_BITMAP *honeypot = NULL;
+   const int NUM_TEST_POTS = 8;	   
+   Object pot_objects[NUM_TEST_POTS];
+   //Map
+   Map map;  
 
    //Initialize allegro
    if(!al_init()) {
@@ -63,16 +70,19 @@ int main(int argc, char **argv)
    al_clear_to_color(al_map_rgb(0,0,0));
    al_flip_display();
 
- 
    //Load image resources --- Note: This must be performed after initializing the displa
-
    //Load the player sprite:
    player = al_load_bitmap(PLAYER_FILE);
    if (!player){
       fprintf(stderr, "failed to create player bitmap!\n");
       goto FAILED_PLAYER;
    }
-
+   //Load the honeypot sprites:
+   honeypot = al_load_bitmap(HONEY_POT_FILE);
+   if (!honeypot){
+      fprintf(stderr, "failed to create honeypot bitmap!\n");
+      goto FAILED_HONEYPOT;
+   }
    //Initialize the event queue
    event_queue = al_create_event_queue();
    if(!event_queue) {
@@ -82,6 +92,27 @@ int main(int argc, char **argv)
    al_register_event_source(event_queue, al_get_display_event_source(display));
    al_register_event_source(event_queue, al_get_timer_event_source(timer));
    al_register_event_source(event_queue, al_get_keyboard_event_source());
+
+   //Initilize the test objects:
+   for (int i=0; i<NUM_TEST_POTS; i++){
+      pot_objects[i].setBitmapHwnd(honeypot);
+   }
+   pot_objects[0].x = 0;
+   pot_objects[0].y = 100;
+   pot_objects[1].x = 800; 
+   pot_objects[1].y = 100;
+   pot_objects[2].x = 0;
+   pot_objects[2].y = 800;
+   pot_objects[3].x = 800;
+   pot_objects[3].y = 800;
+   pot_objects[4].x = 0;
+   pot_objects[4].y = 1000;
+   pot_objects[5].x = 200;
+   pot_objects[5].y = 1200;
+   pot_objects[6].x = 400;
+   pot_objects[6].y = 1400;
+   pot_objects[7].x = 600;
+   pot_objects[7].y = 1600;
 
    al_start_timer(timer);
    while(!doexit)
@@ -105,7 +136,7 @@ int main(int argc, char **argv)
          if(key[KEY_RIGHT] && player_x <= SCREEN_W - PLAYER_SIZE - 4.0) {
             player_x += 4.0;
          }
-
+         map.screenY += 1;
          redraw = true;
       }
       else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
@@ -159,11 +190,17 @@ int main(int argc, char **argv)
  
          al_clear_to_color(al_map_rgb(0,0,0));
 
+	 //Render Player
  	 Object obj;
 	 obj.setBitmapHwnd(player);
-	 obj.x = 0;
-	 obj.y = 0;
+	 obj.x = player_x;
+	 obj.y = player_y;
 	 obj.render();
+
+	 //Render honeypot test objects
+	 for (int i=0; i<NUM_TEST_POTS; i++){
+            map.renderObject(pot_objects[i]);
+         }
 
          al_flip_display();
       }
@@ -172,6 +209,8 @@ int main(int argc, char **argv)
 
    al_destroy_event_queue(event_queue);
 FAILED_EVENT:
+   al_destroy_bitmap(honeypot);
+FAILED_HONEYPOT:
    al_destroy_bitmap(player);
 FAILED_PLAYER:
    al_destroy_display(display);
