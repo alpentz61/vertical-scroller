@@ -6,7 +6,7 @@
 //To Build: g++ main.cpp -lallegro -lallegro_image
 
 const float FPS = 60;
-const int SCREEN_W = 1280;
+const int SCREEN_W = 800;
 const int SCREEN_H = 800;
 enum MYKEYS {
    KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
@@ -17,7 +17,7 @@ const char* HONEY_POT_FILE = "images/pumpkin_open_clipart.png";
 
 int main(int argc, char **argv)
 {
-   bool success = false;
+   bool success = false; 
    ALLEGRO_DISPLAY *display = NULL;
    ALLEGRO_EVENT_QUEUE *event_queue = NULL;
    ALLEGRO_TIMER *timer = NULL;
@@ -191,7 +191,7 @@ int main(int argc, char **argv)
          al_clear_to_color(al_map_rgb(0,0,0));
 
 	 //Render Player
- 	 Object obj;
+ 	 Object obj(&map);
 	 obj.setBitmapHwnd(player);
 	 obj.x = player_x;
 	 obj.y = player_y;

@@ -4,9 +4,6 @@
 #include "game.h"
 #include "object.h"
 
-#include <list>
-#include <array>
-
 //TODO: Use screen constants for this:
 #define ZONE_WIDTH 1280
 #define ZONE_HEIGHT 800
@@ -24,8 +21,8 @@ public:
 	bool collidedWithZone(Object& obj, int zoneIndexc);
 	int getZoneIndex(long worldY);
 	long screenY;
-        //std::list<Object*> objs;
-	//std::array<std::list<Object>,NUM_ZONES> objs_zoned;
+        std::list<Object*> objs;
+	std::array<std::list<Object>,NUM_ZONES> objs_zoned;
 };
 
 #endif
