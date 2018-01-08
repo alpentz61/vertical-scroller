@@ -35,7 +35,6 @@ int main(int argc, char **argv)
    Object pot_objects[NUM_TEST_POTS];
    //Map
    Map map;  
-
    //Initialize allegro
    if(!al_init()) {
       fprintf(stderr, "failed to initialize allegro!\n");
@@ -96,6 +95,7 @@ int main(int argc, char **argv)
    //Initilize the test objects:
    for (int i=0; i<NUM_TEST_POTS; i++){
       pot_objects[i].setBitmapHwnd(honeypot);
+      pot_objects[i].map = &map;
    }
    pot_objects[0].x = 0;
    pot_objects[0].y = 100;
@@ -121,11 +121,11 @@ int main(int argc, char **argv)
       al_wait_for_event(event_queue, &ev);
  
       if(ev.type == ALLEGRO_EVENT_TIMER) {
-         if(key[KEY_UP] && player_y >= 4.0) {
+         if(key[KEY_UP] && (player_y-map.screenY) >= 4.0) {
             player_y -= 4.0;
          }
 
-         if(key[KEY_DOWN] && player_y <= SCREEN_H - PLAYER_SIZE - 4.0) {
+         if(key[KEY_DOWN] && (player_y-map.screenY) <= SCREEN_H - PLAYER_SIZE - 4.0) {
             player_y += 4.0;
          }
 
@@ -191,15 +191,23 @@ int main(int argc, char **argv)
          al_clear_to_color(al_map_rgb(0,0,0));
 
 	 //Render Player
- 	 Object obj(&map);
+ 	 Object obj;
 	 obj.setBitmapHwnd(player);
+         obj.map = &map;
 	 obj.x = player_x;
 	 obj.y = player_y;
 	 obj.render();
 
 	 //Render honeypot test objects
 	 for (int i=0; i<NUM_TEST_POTS; i++){
-            map.renderObject(pot_objects[i]);
+            pot_objects[i].render();
+         }
+  
+         for (int i=0; i<NUM_TEST_POTS; i++){
+            pot_objects[i].collidedWith(&obj);
+         }
+         if (obj.collList.size()>0){
+
          }
 
          al_flip_display();

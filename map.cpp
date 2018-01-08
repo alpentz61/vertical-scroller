@@ -10,9 +10,9 @@ void Map::render(){
 }
 void Map::renderZone(int zoneIndex){
 }
-void Map::renderObject(Object& obj){
-   long renderY = ZONE_HEIGHT - (obj.y - screenY);
-   al_draw_bitmap(obj.bmp_handle, obj.x, renderY, 0);
+void Map::renderBitmap(ALLEGRO_BITMAP *bitmap, long x, long y){
+   long renderY = ZONE_HEIGHT - (y - screenY);
+   al_draw_bitmap(bitmap, x, renderY, 0);
 }
 bool Map::collidedWith(Object& obj){ 
    return false;

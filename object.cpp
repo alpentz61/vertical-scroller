@@ -1,9 +1,8 @@
 #include "object.h"
 
 Object::Object(){}
-Object::Object(Map *map_):map(map_){}
 void Object::render(){
-   al_draw_bitmap(bmp_handle, x, y, 0);
+   map->renderBitmap(bmp_handle, x, y);
 }
 bool Object::collidedWith(Object *other){
    if (x < (other->x + other->width) &&
@@ -20,7 +19,7 @@ bool Object::collidedWith(Object *other){
    return false;
 }
 void Object::animate(){
-//
+//animate does nothing by default
 }
 void Object::setBitmapHwnd(ALLEGRO_BITMAP *bmp_handle_){
    bmp_handle = bmp_handle_;

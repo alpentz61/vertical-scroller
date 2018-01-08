@@ -2,6 +2,7 @@
 #define OBJECT_H
 
 #include "game.h"
+#include "map.h"
 
 class Map;
 class Object;
@@ -21,7 +22,6 @@ public:
 class Object {
 public:
 	Object();
-        Object(Map *map);
 	virtual void render();
 	virtual bool collidedWith(Object *other);
 	virtual void animate();

@@ -10,13 +10,15 @@
 #define NUM_ZONES 50
 #define MAP_HEIGHT NUM_ZONES * ZONE_HEIGHT 
 
+class Object;
+
 class Map {
 public:
 	Map();
         bool initialize();
 	void render();
 	void renderZone(int zoneIndex);
-	void renderObject(Object& obj);
+	void renderBitmap(ALLEGRO_BITMAP *bitmap, long x, long y);
 	bool collidedWith(Object& obj);
 	bool collidedWithZone(Object& obj, int zoneIndexc);
 	int getZoneIndex(long worldY);
