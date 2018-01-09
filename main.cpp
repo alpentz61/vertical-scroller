@@ -65,6 +65,7 @@ int main(int argc, char **argv)
       goto FAILED;
    }
 
+   //Load the font
    font = al_load_ttf_font("chintzys.ttf",72,0 );
    if (!font){
       fprintf(stderr, "Could not load 'chintzys.ttf'.\n");
@@ -100,18 +101,21 @@ int main(int argc, char **argv)
       fprintf(stderr, "failed to create player bitmap!\n");
       goto FAILED_PLAYER;
    }
+
    //Load the honeypot sprites:
    honeypot = al_load_bitmap(HONEY_POT_FILE);
    if (!honeypot){
       fprintf(stderr, "failed to create honeypot bitmap!\n");
       goto FAILED_HONEYPOT;
    }
+
    //Load the network switch sprite:
    switch_bitmap = al_load_bitmap("images/network_switch.jpg");
    if (!switch_bitmap){
       fprintf(stderr, "failed to create network switch bitmap!\n");
       goto FAILED_HONEYPOT; //TODO: Proper memory management
    }
+
    //Initialize the event queue
    event_queue = al_create_event_queue();
    if(!event_queue) {
@@ -148,6 +152,8 @@ int main(int argc, char **argv)
    nwSwitch.map = &map;
    nwSwitch.x = 0;
    nwSwitch.y = 1600;
+   nwSwitch.font = font;
+  
 
    al_start_timer(timer);
    while(!doexit)
@@ -240,14 +246,23 @@ int main(int argc, char **argv)
 	 for (int i=0; i<NUM_TEST_POTS; i++){
             pot_objects[i].render();
          }
-  
+  	  
+         //Test collision with honeypots
          for (int i=0; i<NUM_TEST_POTS; i++){
             pot_objects[i].collidedWith(&obj);
          }
-         if (obj.collList.size()>0){
 
+         //Test collisions with the nwSwitch:
+         nwSwitch.collidedWith(&obj);
+
+         if (obj.collList.size()>0){
+            for (std::list<Collision>::const_iterator it = obj.collList.begin();
+               it != obj.collList.end(); it++){
+               printf("Coll Type %d\n",it->collType);
+            }
          }
 
+         
          //Render the switch:
          nwSwitch.render();
 

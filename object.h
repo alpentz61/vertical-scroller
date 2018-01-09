@@ -39,9 +39,11 @@ public:
 
 class Switch : public Object {
 public:
+   Switch();
    virtual void render();
    virtual bool collidedWith(Object *other);
    virtual void animate();
+   ALLEGRO_FONT *font;
    unsigned char code;
    int counter;
 

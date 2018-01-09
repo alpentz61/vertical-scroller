@@ -33,6 +33,7 @@ void Object::clearCollisions(){
    collList.clear();
 }
 
+Switch::Switch():font(NULL),code(0),counter(0){}
 void Switch::render(){
    map->renderBitmap(bmp_handle, x, y);
 }
@@ -45,9 +46,47 @@ bool Switch::collidedWith(Object *other){
    long x1_switch = x + width;
    long y_switch = y;
    long y1_switch = y + height;
+   code = 3;
    if ((y1_player > y_switch && y1_player < y1_switch) ||
        (y_player > y_switch && y_player < y1_switch)) {
-      
+      Collision collision;
+      collision.collObject=this;
+      if ((x_player > 50) && (x1_player < 150)){
+         if (!(code & 8)){ 
+            collision.collType = SWITCH_PASS;
+         }
+         else { 
+            collision.collType = SWITCH_KILL;
+         }
+      }
+      else if ((x_player > 250) && (x1_player < 350)){
+         if (!(code & 4)){ 
+            collision.collType = SWITCH_PASS;
+         }
+         else { 
+            collision.collType = SWITCH_KILL;
+         }
+      }    
+      else if ((x_player > 450) && (x1_player < 550)){
+         if (!(code & 2)){ 
+            collision.collType = SWITCH_PASS;
+         }
+         else { 
+            collision.collType = SWITCH_KILL;
+         }
+      }
+      else if ((x_player > 650) && (x1_player < 750)){
+         if (!(code & 1)){ 
+            collision.collType = SWITCH_PASS;
+         }
+         else { 
+            collision.collType = SWITCH_KILL;
+         }
+      }
+      else {
+         collision.collType = SWITCH_KILL;
+      }
+      other->setCollision(collision);
       return true;
    }
    return false;
