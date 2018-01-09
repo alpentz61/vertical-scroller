@@ -32,3 +32,26 @@ void Object::setCollision(Collision& collision){
 void Object::clearCollisions(){
    collList.clear();
 }
+
+void Switch::render(){
+   map->renderBitmap(bmp_handle, x, y);
+}
+bool Switch::collidedWith(Object *other){
+   long x_player = other->x;
+   long x1_player = other->x + other->width;
+   long y_player = other->y;
+   long y1_player = other->y + other->height;
+   long x_switch = x;
+   long x1_switch = x + width;
+   long y_switch = y;
+   long y1_switch = y + height;
+   if ((y1_player > y_switch && y1_player < y1_switch) ||
+       (y_player > y_switch && y_player < y1_switch)) {
+      
+      return true;
+   }
+   return false;
+}
+void Switch::animate(){
+
+}

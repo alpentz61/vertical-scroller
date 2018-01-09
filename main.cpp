@@ -33,8 +33,14 @@ int main(int argc, char **argv)
    ALLEGRO_BITMAP *honeypot = NULL;
    const int NUM_TEST_POTS = 8;	   
    Object pot_objects[NUM_TEST_POTS];
+   //Network Switch
+   ALLEGRO_BITMAP *switch_bitmap = NULL;
+   Switch nwSwitch;
    //Map
    Map map;  
+   //Font
+   ALLEGRO_FONT *font = NULL;
+
    //Initialize allegro
    if(!al_init()) {
       fprintf(stderr, "failed to initialize allegro!\n");
@@ -44,6 +50,24 @@ int main(int argc, char **argv)
    //Initialize the image addon portion of the library
    if(!al_init_image_addon()) {
       fprintf(stderr, "failed to initialize the image addon!\n");
+      goto FAILED;
+   }
+
+   //Initialize the font add on
+   if (!al_init_font_addon()){
+      fprintf(stderr, "failed to initialize the font addon!\n");
+      goto FAILED;
+   }
+
+   //Initialize the ttf add on
+   if (!al_init_ttf_addon()){
+      fprintf(stderr, "failed to initialize ttf addon!\n");
+      goto FAILED;
+   }
+
+   font = al_load_ttf_font("chintzys.ttf",72,0 );
+   if (!font){
+      fprintf(stderr, "Could not load 'chintzys.ttf'.\n");
       goto FAILED;
    }
  
@@ -82,6 +106,12 @@ int main(int argc, char **argv)
       fprintf(stderr, "failed to create honeypot bitmap!\n");
       goto FAILED_HONEYPOT;
    }
+   //Load the network switch sprite:
+   switch_bitmap = al_load_bitmap("images/network_switch.jpg");
+   if (!switch_bitmap){
+      fprintf(stderr, "failed to create network switch bitmap!\n");
+      goto FAILED_HONEYPOT; //TODO: Proper memory management
+   }
    //Initialize the event queue
    event_queue = al_create_event_queue();
    if(!event_queue) {
@@ -113,6 +143,11 @@ int main(int argc, char **argv)
    pot_objects[6].y = 1400;
    pot_objects[7].x = 600;
    pot_objects[7].y = 1600;
+   //Network switch test object
+   nwSwitch.setBitmapHwnd(switch_bitmap);
+   nwSwitch.map = &map;
+   nwSwitch.x = 0;
+   nwSwitch.y = 1600;
 
    al_start_timer(timer);
    while(!doexit)
@@ -190,6 +225,9 @@ int main(int argc, char **argv)
  
          al_clear_to_color(al_map_rgb(0,0,0));
 
+         //Render Text:
+          al_draw_text(font, al_map_rgb(255,255,255), 0,0,0, "Your Text Here!");
+
 	 //Render Player
  	 Object obj;
 	 obj.setBitmapHwnd(player);
@@ -209,6 +247,9 @@ int main(int argc, char **argv)
          if (obj.collList.size()>0){
 
          }
+
+         //Render the switch:
+         nwSwitch.render();
 
          al_flip_display();
       }
