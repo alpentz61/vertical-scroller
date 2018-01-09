@@ -44,7 +44,9 @@ public:
    virtual bool collidedWith(Object *other);
    virtual void animate();
    ALLEGRO_FONT *font;
-   unsigned char code;
+   unsigned int code;
+   char codeString[4];
+   bool updateLabel;
    int counter;
 
 };

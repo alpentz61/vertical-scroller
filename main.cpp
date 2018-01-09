@@ -254,6 +254,7 @@ int main(int argc, char **argv)
 
          //Test collisions with the nwSwitch:
          nwSwitch.collidedWith(&obj);
+         nwSwitch.animate();
 
          if (obj.collList.size()>0){
             for (std::list<Collision>::const_iterator it = obj.collList.begin();

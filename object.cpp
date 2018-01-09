@@ -33,9 +33,11 @@ void Object::clearCollisions(){
    collList.clear();
 }
 
-Switch::Switch():font(NULL),code(0),counter(0){}
+Switch::Switch():font(NULL),code(0),codeString("0"),updateLabel(false),counter(0){}
 void Switch::render(){
    map->renderBitmap(bmp_handle, x, y);
+   long renderY = ZONE_HEIGHT - ((-12+y)-map->screenY);
+   al_draw_text(font, al_map_rgb(255,255,255), 372,renderY,0, codeString);
 }
 bool Switch::collidedWith(Object *other){
    long x_player = other->x;
@@ -46,7 +48,6 @@ bool Switch::collidedWith(Object *other){
    long x1_switch = x + width;
    long y_switch = y;
    long y1_switch = y + height;
-   code = 3;
    if ((y1_player > y_switch && y1_player < y1_switch) ||
        (y_player > y_switch && y_player < y1_switch)) {
       Collision collision;
@@ -92,5 +93,13 @@ bool Switch::collidedWith(Object *other){
    return false;
 }
 void Switch::animate(){
-
+   counter++;
+   if (counter == 60){
+      counter = 0;
+      sprintf(codeString,"%X",code);
+      code++;
+      if (code == 16){
+         code = 0;
+      } 
+   }
 }
