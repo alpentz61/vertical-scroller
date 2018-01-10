@@ -28,11 +28,13 @@ public:
 	void render();
 	void renderZone(int zoneIndex);
 	void renderBitmap(ALLEGRO_BITMAP *bitmap, long x, long y);
+	void animate();
+	void animateZone(int zoneIndex);
 	bool collidedWith(Object& obj);
 	bool collidedWithZone(Object& obj, int zoneIndexc);
 	int getZoneIndex(long worldY);
 	long screenY;
-	std::list<Config> config;
+	std::list<Config> config; //TODO: For polymorphism to work, these must be Object pointers
   std::list<Object> objs;
 	std::array<std::list<Object>,NUM_ZONES> objs_zoned;
 	ALLEGRO_FONT *font;

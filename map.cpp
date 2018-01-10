@@ -19,11 +19,11 @@ bool Map::initialize(){
    }
    pot_objects[0].x = 0;
    pot_objects[0].y = 100;
-   pot_objects[1].x = 800;
+   pot_objects[1].x = 700;
    pot_objects[1].y = 100;
    pot_objects[2].x = 0;
    pot_objects[2].y = 800;
-   pot_objects[3].x = 800;
+   pot_objects[3].x = 700;
    pot_objects[3].y = 800;
    pot_objects[4].x = 0;
    pot_objects[4].y = 1000;
@@ -75,7 +75,6 @@ bool Map::initialize(){
    return true;
 }
 bool Map::loadResources(){
-   bool success = false;
    //Load the font
    font = al_load_ttf_font("chintzys.ttf",72,0 );
    if (!font){
@@ -111,7 +110,7 @@ bool Map::loadResources(){
       goto FAILED_SCANNER;
    }
 
-   success = true;
+   return true; //TODO: Handle cleanup of bitmaps after they are done being used.
 
    al_destroy_bitmap(scanner_bitmap);
 FAILED_SCANNER:
@@ -123,7 +122,7 @@ FAILED_SWITCH:
 FAILED_HONEYPOT:
    al_destroy_font(font);
 FAILED_FONT:
-   return success;
+   return false;
 }
 
 /*
@@ -145,18 +144,77 @@ bool Map::loadConfig(const std::string& cfg_file) {
 }
 */
 void Map::render(){
+  int zoneIndex = getZoneIndex(screenY);
+  if (zoneIndex > 0){
+    renderZone(zoneIndex-1);
+  }
+  renderZone(zoneIndex);
+  if (zoneIndex < (NUM_ZONES-1)){
+    renderZone(zoneIndex+1);
+  }
 }
-void Map::renderZone(int zoneIndex){
+void Map::renderZone(int z){
+   for (std::list<Object>::iterator it = objs_zoned[z].begin();
+         it != objs_zoned[z].end(); it++){
+      long renderY = it->y - screenY;
+      if (renderY > it->height || renderY < ZONE_HEIGHT) {
+        (*it).render();
+      }
+   }
 }
 void Map::renderBitmap(ALLEGRO_BITMAP *bitmap, long x, long y){
    long renderY = ZONE_HEIGHT - (y - screenY);
    al_draw_bitmap(bitmap, x, renderY, 0);
 }
-bool Map::collidedWith(Object& obj){
-   return false;
+void Map::animate(){
+  int zoneIndex = getZoneIndex(screenY);
+  if (zoneIndex > 0){
+    animateZone(zoneIndex-1);
+  }
+  animateZone(zoneIndex);
+  if (zoneIndex < (NUM_ZONES-1)){
+    animateZone(zoneIndex+1);
+  }
 }
-bool Map::collidedWithZone(Object& obj, int zoneIndex){
-   return false;
+void Map::animateZone(int z){
+  for (std::list<Object>::iterator it = objs_zoned[z].begin();
+       it != objs_zoned[z].end(); it++){
+    (*it).animate();
+  }
+}
+bool Map::collidedWith(Object& obj){
+  bool collided = false;
+  for (std::list<Object>::iterator it = objs.begin();
+        it != objs.end(); it++){
+     if((*it).collidedWith(&obj)){
+       collided = true;
+       printf("collided\n");
+     }
+  }
+  return collided;
+/* //TODO: Figure out why this collision 
+  bool collided = false;
+  int zoneIndex = getZoneIndex(screenY);
+  if (zoneIndex > 0){
+    if(collidedWithZone(obj,zoneIndex-1))collided = true;
+  }
+  if(collidedWithZone(obj,zoneIndex-1))collided = true;
+  if (zoneIndex < (NUM_ZONES-1)){
+    if(collidedWithZone(obj,zoneIndex-1))collided = true;
+  }
+  return collided;
+*/
+}
+bool Map::collidedWithZone(Object& obj, int z){
+   bool collided = false;
+   for (std::list<Object>::iterator it = objs_zoned[z].begin();
+         it != objs_zoned[z].end(); it++){
+      if((*it).collidedWith(&obj)){
+        collided = true;
+        printf("collided\n");
+      }
+   }
+   return collided;
 }
 int Map::getZoneIndex(long worldY){
    return worldY / ZONE_HEIGHT;

@@ -30,12 +30,13 @@ int main(int argc, char **argv)
    long player_x = SCREEN_W / 2.0 - PLAYER_SIZE / 2.0;
    long player_y = SCREEN_H / 2.0 - PLAYER_SIZE / 2.0;
    //Honeypot
-   ALLEGRO_BITMAP *honeypot = NULL;
+   /*ALLEGRO_BITMAP *honeypot = NULL;
    const int NUM_TEST_POTS = 8;
    Object pot_objects[NUM_TEST_POTS];
    //Network Switch
    ALLEGRO_BITMAP *switch_bitmap = NULL;
    Switch nwSwitch;
+   */
    //Map
    Map map;
    //Font
@@ -65,13 +66,6 @@ int main(int argc, char **argv)
       goto FAILED;
    }
 
-   //Load the font
-   font = al_load_ttf_font("chintzys.ttf",72,0 );
-   if (!font){
-      fprintf(stderr, "Could not load 'chintzys.ttf'.\n");
-      goto FAILED;
-   }
-
    //Initialize the keybaord handler
    if(!al_install_keyboard()) {
       fprintf(stderr, "failed to initialize the keyboard!\n");
@@ -94,26 +88,11 @@ int main(int argc, char **argv)
    al_clear_to_color(al_map_rgb(0,0,0));
    al_flip_display();
 
-   //Load image resources --- Note: This must be performed after initializing the displa
    //Load the player sprite:
    player = al_load_bitmap(PLAYER_FILE);
    if (!player){
       fprintf(stderr, "failed to create player bitmap!\n");
       goto FAILED_PLAYER;
-   }
-
-   //Load the honeypot sprites:
-   honeypot = al_load_bitmap(HONEY_POT_FILE);
-   if (!honeypot){
-      fprintf(stderr, "failed to create honeypot bitmap!\n");
-      goto FAILED_HONEYPOT;
-   }
-
-   //Load the network switch sprite:
-   switch_bitmap = al_load_bitmap("images/network_switch.jpg");
-   if (!switch_bitmap){
-      fprintf(stderr, "failed to create network switch bitmap!\n");
-      goto FAILED_HONEYPOT; //TODO: Proper memory management
    }
 
    //Initialize the event queue
@@ -126,35 +105,9 @@ int main(int argc, char **argv)
    al_register_event_source(event_queue, al_get_timer_event_source(timer));
    al_register_event_source(event_queue, al_get_keyboard_event_source());
 
-   //Initilize the test objects:
-   map.initialize();
-   for (int i=0; i<NUM_TEST_POTS; i++){
-      pot_objects[i].setBitmapHwnd(honeypot);
-      pot_objects[i].map = &map;
+   if(!map.initialize()){
+     goto FAILED; //TODO: Proper memory management
    }
-   pot_objects[0].x = 0;
-   pot_objects[0].y = 100;
-   pot_objects[1].x = 800;
-   pot_objects[1].y = 100;
-   pot_objects[2].x = 0;
-   pot_objects[2].y = 800;
-   pot_objects[3].x = 800;
-   pot_objects[3].y = 800;
-   pot_objects[4].x = 0;
-   pot_objects[4].y = 1000;
-   pot_objects[5].x = 200;
-   pot_objects[5].y = 1200;
-   pot_objects[6].x = 400;
-   pot_objects[6].y = 1400;
-   pot_objects[7].x = 600;
-   pot_objects[7].y = 1600;
-   //Network switch test object
-   nwSwitch.setBitmapHwnd(switch_bitmap);
-   nwSwitch.map = &map;
-   nwSwitch.x = 0;
-   nwSwitch.y = 1600;
-   nwSwitch.font = font;
-
 
    al_start_timer(timer);
    while(!doexit)
@@ -232,41 +185,29 @@ int main(int argc, char **argv)
 
          al_clear_to_color(al_map_rgb(0,0,0));
 
-         //Render Text:
-          al_draw_text(font, al_map_rgb(255,255,255), 0,0,0, "Your Text Here!");
-
-	 //Render Player
- 	 Object obj;
-	 obj.setBitmapHwnd(player);
+         //Player object
+         Object obj;
+         obj.setBitmapHwnd(player);
          obj.map = &map;
-	 obj.x = player_x;
-	 obj.y = player_y;
-	 obj.render();
+         obj.x = player_x;
+         obj.y = player_y;
 
-	 //Render honeypot test objects
-	 for (int i=0; i<NUM_TEST_POTS; i++){
-            pot_objects[i].render();
-         }
-
-         //Test collision with honeypots
-         for (int i=0; i<NUM_TEST_POTS; i++){
-            pot_objects[i].collidedWith(&obj);
-         }
-
-         //Test collisions with the nwSwitch:
-         nwSwitch.collidedWith(&obj);
-         nwSwitch.animate();
-
-         if (obj.collList.size()>0){
-            for (std::list<Collision>::const_iterator it = obj.collList.begin();
+         //Handle collisions
+         map.collidedWith(obj);
+         for (std::list<Collision>::iterator it = obj.collList.begin();
                it != obj.collList.end(); it++){
-               printf("Coll Type %d\n",it->collType);
-            }
+            printf("Coll Type %d\n",(*it).collType);
          }
+         obj.collList.clear();
 
+         //Animate the game objects
+         map.animate();
 
-         //Render the switch:
-         nwSwitch.render();
+         //Render the player
+         obj.render();
+
+         //Render all game objects currently active
+         map.render();
 
          al_flip_display();
       }
@@ -275,7 +216,6 @@ int main(int argc, char **argv)
 
    al_destroy_event_queue(event_queue);
 FAILED_EVENT:
-   al_destroy_bitmap(honeypot);
 FAILED_HONEYPOT:
    al_destroy_bitmap(player);
 FAILED_PLAYER:

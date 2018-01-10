@@ -1,15 +1,20 @@
 #include "object.h"
 
-Object::Object(){}
+Object::Object():bmp_handle(NULL),map(NULL),x(0),y(0),width(0),height(0){}
 void Object::render(){
+   if (bmp_handle == NULL){
+     std::cerr << "Handle is null\n";
+   }
    map->renderBitmap(bmp_handle, x, y);
 }
 bool Object::collidedWith(Object *other){
+
    if (x < (other->x + other->width) &&
        (x + width) > other->x        &&
        y < (other->y + other->height) &&
        (y + height) > other->y
        ){
+
       Collision collision;
       collision.collObject=this;
       collision.collType=OBJECT;
@@ -25,7 +30,7 @@ void Object::setBitmapHwnd(ALLEGRO_BITMAP *bmp_handle_){
    bmp_handle = bmp_handle_;
    width = al_get_bitmap_width(bmp_handle);
    height = al_get_bitmap_height(bmp_handle);
-} 
+}
 void Object::setCollision(Collision& collision){
    collList.push_back(collision);
 }
@@ -53,34 +58,34 @@ bool Switch::collidedWith(Object *other){
       Collision collision;
       collision.collObject=this;
       if ((x_player > 50) && (x1_player < 150)){
-         if (!(code & 8)){ 
+         if (!(code & 8)){
             collision.collType = SWITCH_PASS;
          }
-         else { 
+         else {
             collision.collType = SWITCH_KILL;
          }
       }
       else if ((x_player > 250) && (x1_player < 350)){
-         if (!(code & 4)){ 
+         if (!(code & 4)){
             collision.collType = SWITCH_PASS;
          }
-         else { 
+         else {
             collision.collType = SWITCH_KILL;
          }
-      }    
+      }
       else if ((x_player > 450) && (x1_player < 550)){
-         if (!(code & 2)){ 
+         if (!(code & 2)){
             collision.collType = SWITCH_PASS;
          }
-         else { 
+         else {
             collision.collType = SWITCH_KILL;
          }
       }
       else if ((x_player > 650) && (x1_player < 750)){
-         if (!(code & 1)){ 
+         if (!(code & 1)){
             collision.collType = SWITCH_PASS;
          }
-         else { 
+         else {
             collision.collType = SWITCH_KILL;
          }
       }
@@ -100,8 +105,6 @@ void Switch::animate(){
       code++;
       if (code == 16){
          code = 0;
-      } 
+      }
    }
 }
-
-
