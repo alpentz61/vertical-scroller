@@ -17,7 +17,7 @@ const char* HONEY_POT_FILE = "images/pumpkin_open_clipart.png";
 
 int main(int argc, char **argv)
 {
-   bool success = false; 
+   bool success = false;
    ALLEGRO_DISPLAY *display = NULL;
    ALLEGRO_EVENT_QUEUE *event_queue = NULL;
    ALLEGRO_TIMER *timer = NULL;
@@ -31,13 +31,13 @@ int main(int argc, char **argv)
    long player_y = SCREEN_H / 2.0 - PLAYER_SIZE / 2.0;
    //Honeypot
    ALLEGRO_BITMAP *honeypot = NULL;
-   const int NUM_TEST_POTS = 8;	   
+   const int NUM_TEST_POTS = 8;
    Object pot_objects[NUM_TEST_POTS];
    //Network Switch
    ALLEGRO_BITMAP *switch_bitmap = NULL;
    Switch nwSwitch;
    //Map
-   Map map;  
+   Map map;
    //Font
    ALLEGRO_FONT *font = NULL;
 
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
       fprintf(stderr, "Could not load 'chintzys.ttf'.\n");
       goto FAILED;
    }
- 
+
    //Initialize the keybaord handler
    if(!al_install_keyboard()) {
       fprintf(stderr, "failed to initialize the keyboard!\n");
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
       fprintf(stderr, "failed to create timer!\n");
       goto FAILED;
    }
- 
+
    //Initialize the display
    display = al_create_display(SCREEN_W, SCREEN_H);
    if(!display) {
@@ -127,13 +127,14 @@ int main(int argc, char **argv)
    al_register_event_source(event_queue, al_get_keyboard_event_source());
 
    //Initilize the test objects:
+   map.initialize();
    for (int i=0; i<NUM_TEST_POTS; i++){
       pot_objects[i].setBitmapHwnd(honeypot);
       pot_objects[i].map = &map;
    }
    pot_objects[0].x = 0;
    pot_objects[0].y = 100;
-   pot_objects[1].x = 800; 
+   pot_objects[1].x = 800;
    pot_objects[1].y = 100;
    pot_objects[2].x = 0;
    pot_objects[2].y = 800;
@@ -153,14 +154,14 @@ int main(int argc, char **argv)
    nwSwitch.x = 0;
    nwSwitch.y = 1600;
    nwSwitch.font = font;
-  
+
 
    al_start_timer(timer);
    while(!doexit)
    {
       ALLEGRO_EVENT ev;
       al_wait_for_event(event_queue, &ev);
- 
+
       if(ev.type == ALLEGRO_EVENT_TIMER) {
          if(key[KEY_UP] && (player_y-map.screenY) >= 4.0) {
             player_y -= 4.0;
@@ -193,7 +194,7 @@ int main(int argc, char **argv)
                key[KEY_DOWN] = true;
                break;
 
-            case ALLEGRO_KEY_LEFT: 
+            case ALLEGRO_KEY_LEFT:
                key[KEY_LEFT] = true;
                break;
 
@@ -212,7 +213,7 @@ int main(int argc, char **argv)
                key[KEY_DOWN] = false;
                break;
 
-            case ALLEGRO_KEY_LEFT: 
+            case ALLEGRO_KEY_LEFT:
                key[KEY_LEFT] = false;
                break;
 
@@ -225,10 +226,10 @@ int main(int argc, char **argv)
                break;
          }
       }
- 
+
       if(redraw && al_is_event_queue_empty(event_queue)) {
          redraw = false;
- 
+
          al_clear_to_color(al_map_rgb(0,0,0));
 
          //Render Text:
@@ -246,7 +247,7 @@ int main(int argc, char **argv)
 	 for (int i=0; i<NUM_TEST_POTS; i++){
             pot_objects[i].render();
          }
-  	  
+
          //Test collision with honeypots
          for (int i=0; i<NUM_TEST_POTS; i++){
             pot_objects[i].collidedWith(&obj);
@@ -263,7 +264,7 @@ int main(int argc, char **argv)
             }
          }
 
-         
+
          //Render the switch:
          nwSwitch.render();
 
@@ -289,4 +290,3 @@ FAILED:
       return -1;
    }
 }
-

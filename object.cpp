@@ -94,7 +94,7 @@ bool Switch::collidedWith(Object *other){
 }
 void Switch::animate(){
    counter++;
-   if (counter == 60){
+   if (counter == 120){
       counter = 0;
       sprintf(codeString,"%X",code);
       code++;
@@ -103,3 +103,5 @@ void Switch::animate(){
       } 
    }
 }
+
+
