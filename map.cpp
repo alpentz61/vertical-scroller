@@ -4,11 +4,74 @@ Map::Map(){
    screenY = 0;
 }
 bool Map::initialize(){
-
-   /*if (!loadConfig("map_cfg.json")){
+   //load resources
+   if (!loadResources()){
      return false;
    }
-   */
+
+   //Create game objects
+   //honeypot:
+   const int NUM_POTS = 16;
+   Object pot_objects[NUM_POTS];
+   for (int i=0; i<NUM_POTS; i++){
+      pot_objects[i].setBitmapHwnd(honeypot_bitmap);
+      pot_objects[i].map = this;
+   }
+   pot_objects[0].x = 0;
+   pot_objects[0].y = 100;
+   pot_objects[1].x = 800;
+   pot_objects[1].y = 100;
+   pot_objects[2].x = 0;
+   pot_objects[2].y = 800;
+   pot_objects[3].x = 800;
+   pot_objects[3].y = 800;
+   pot_objects[4].x = 0;
+   pot_objects[4].y = 1000;
+   pot_objects[5].x = 200;
+   pot_objects[5].y = 1200;
+   pot_objects[6].x = 400;
+   pot_objects[6].y = 1400;
+   pot_objects[7].x = 600;
+   pot_objects[7].y = 1900;
+   pot_objects[8].x = 0;
+   pot_objects[8].y = 1900;
+   pot_objects[9].x = 100;
+   pot_objects[9].y = 1900;
+   pot_objects[10].x = 200;
+   pot_objects[10].y = 1900;
+   pot_objects[11].x = 300;
+   pot_objects[11].y = 2200;
+   pot_objects[12].x = 400;
+   pot_objects[12].y = 2200;
+   pot_objects[13].x = 500;
+   pot_objects[13].y = 2200;
+   pot_objects[14].x = 100;
+   pot_objects[14].y = 2500;
+   pot_objects[15].x = 600;
+   pot_objects[15].y = 2500;
+   for (int i=0; i<NUM_POTS; i++){
+      objs.push_back(pot_objects[i]);
+   }
+   //network switch
+   Switch nwSwitch;
+   nwSwitch.setBitmapHwnd(switch_bitmap);
+   nwSwitch.map = this;
+   nwSwitch.x = 0;
+   nwSwitch.y = 1600;
+   nwSwitch.font = font;
+   objs.push_back(nwSwitch);
+
+   //Paritition the objects into zones
+   for (std::list<Object>::const_iterator it = objs.begin(); it != objs.end(); it++){
+     int zoneIndex = getZoneIndex(it->y);
+     if (zoneIndex < NUM_ZONES){
+       objs_zoned.at(zoneIndex).push_back(*it);
+     }
+     else {
+       std::cerr << "Error - zone index is out of range.\n";
+       return false;
+     }
+   }
    return true;
 }
 bool Map::loadResources(){
@@ -96,5 +159,5 @@ bool Map::collidedWithZone(Object& obj, int zoneIndex){
    return false;
 }
 int Map::getZoneIndex(long worldY){
-   return -1;
+   return worldY / ZONE_HEIGHT;
 }

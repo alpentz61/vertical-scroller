@@ -7,7 +7,7 @@
 //TODO: Use screen constants for this:
 #define ZONE_WIDTH 1280
 #define ZONE_HEIGHT 800
-#define NUM_ZONES 50
+#define NUM_ZONES 10
 #define MAP_HEIGHT NUM_ZONES * ZONE_HEIGHT
 
 class Object;
