@@ -12,7 +12,11 @@ class Honeypot;
 typedef enum{
    OBJECT,
    SWITCH_PASS,
-   SWITCH_KILL
+   SWITCH_KILL,
+   HONEYPOT_DETECT,
+   HONEYPOT_KILL,
+   SCANNER_TRACK,
+   SCANNER_KILL
 }CollisionType;
 
 class Vector {
@@ -77,7 +81,16 @@ public:
    char codeString[4];
    bool updateLabel;
    int counter;
+};
 
+#define DETECT_DIST = 300
+class Scanner : public Object {
+  Scanner();
+  virtual bool collidedWith(Object *other);
+  virtual void animate();
+  void trackPlayer(Player *player);
+  bool isTracking;
+  int counter;
 };
 
 class Honeypot : public Object {

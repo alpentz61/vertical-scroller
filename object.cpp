@@ -19,7 +19,6 @@ void Object::render(){
    map->renderBitmap(bmp_handle, x, y);
 }
 bool Object::collidedWith(Object *other){
-
    if (x < (other->x + other->width) &&
        (x + width) > other->x        &&
        y < (other->y + other->height) &&
@@ -189,4 +188,59 @@ void Switch::animate(){
          code = 0;
       }
    }
+}
+
+Scanner::Scanner():isTracking(false),counter(0){}
+bool Scanner::collidedWith(Object *other){
+   //Detect kill collisions on impact
+   if (x < (other->x + other->width) &&
+      (x + width) > other->x        &&
+      y < (other->y + other->height) &&
+      (y + height) > other->y
+      ){
+      Collision collision;
+      collision.collObject=this;
+      collision.collType=SCANNER_KILL;
+      other->setCollision(collision);
+      return true;
+   } else { //Start scanning when within a given distance
+      Vector vect;
+      vect.x = other->x - x;
+      vect.y = other->y - y;
+      float magnitude = vect.magnitude();
+      if (magnitude < DETECT_DIST){
+         Collision collision;
+         collision.collObject=this;
+         collision.collType=SCANNER_TRACK;
+         other->setCollision(collision);
+         return true;
+     }
+   }
+   return false;
+}
+void Scanner::animate(){
+  if (isTracking){
+    Vector vect;
+    vect.x = other->x - x;
+    vect.y = other->y - y;
+    vect.normalize();
+    vect.x *= 4;
+    vect.y *= 4;
+    x += vect.x;
+    y += vect.y;
+    //Move for duration specified by chase timer
+    //This should be close enough to kill the player
+    chaseTimer--;
+    if (chaseTimer <= 0){
+      isCaught = false;
+    }
+  }
+  
+}
+
+}
+void Scanner::trackPlayer(Player *player_){
+  player = player_;
+  isTracking = true;
+  counter = 300;
 }
