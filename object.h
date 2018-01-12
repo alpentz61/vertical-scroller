@@ -13,6 +13,13 @@ typedef enum{
    SWITCH_KILL
 }CollisionType;
 
+class Vector {
+  float x;
+  float y;
+  float magnitude();
+  bool normalize();
+};
+
 class Collision{
 public:
    Object *collObject;
@@ -28,13 +35,17 @@ public:
    void setBitmapHwnd(ALLEGRO_BITMAP *bmp_handle);
    void setCollision(Collision& collision);
    void clearCollisions();
-   Map *map;	
+   Map *map;
    ALLEGRO_BITMAP *bmp_handle;
    long x;
    long y;
    long width;
    long height;
    std::list<Collision> collList;
+};
+
+class Player : public Object {
+
 };
 
 class Switch : public Object {

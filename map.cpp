@@ -50,22 +50,24 @@ bool Map::initialize(){
    pot_objects[15].x = 600;
    pot_objects[15].y = 2500;
    for (int i=0; i<NUM_POTS; i++){
-      objs.push_back(pot_objects[i]);
+      Object *obj = new Object;
+      *obj = pot_objects[i];
+      objs.push_back(obj);
    }
    //network switch
-   Switch nwSwitch;
-   nwSwitch.setBitmapHwnd(switch_bitmap);
-   nwSwitch.map = this;
-   nwSwitch.x = 0;
-   nwSwitch.y = 1600;
-   nwSwitch.font = font;
+   Switch *nwSwitch = new Switch;
+   nwSwitch->setBitmapHwnd(switch_bitmap);
+   nwSwitch->map = this;
+   nwSwitch->x = 0;
+   nwSwitch->y = 1600;
+   nwSwitch->font = font;
    objs.push_back(nwSwitch);
 
    //Paritition the objects into zones
-   for (std::list<Object>::const_iterator it = objs.begin(); it != objs.end(); it++){
-     int zoneIndex = getZoneIndex(it->y);
+   for (std::list<Object*>::iterator it = objs.begin(); it != objs.end(); it++){
+     int zoneIndex = getZoneIndex((*it)->y);
      if (zoneIndex < NUM_ZONES){
-       objs_zoned.at(zoneIndex).push_back(*it);
+       objs_zoned.at(zoneIndex).push_back((*it));
      }
      else {
        std::cerr << "Error - zone index is out of range.\n";
@@ -154,11 +156,11 @@ void Map::render(){
   }
 }
 void Map::renderZone(int z){
-   for (std::list<Object>::iterator it = objs_zoned[z].begin();
+   for (std::list<Object*>::iterator it = objs_zoned[z].begin();
          it != objs_zoned[z].end(); it++){
-      long renderY = it->y - screenY;
-      if (renderY > it->height || renderY < ZONE_HEIGHT) {
-        (*it).render();
+      long renderY = (*it)->y - screenY;
+      if (renderY > (*it)->height || renderY < ZONE_HEIGHT) {
+        (*it)->render();
       }
    }
 }
@@ -177,22 +179,23 @@ void Map::animate(){
   }
 }
 void Map::animateZone(int z){
-  for (std::list<Object>::iterator it = objs_zoned[z].begin();
+  for (std::list<Object*>::iterator it = objs_zoned[z].begin();
        it != objs_zoned[z].end(); it++){
-    (*it).animate();
+    (*it)->animate();
   }
 }
 bool Map::collidedWith(Object& obj){
   bool collided = false;
-  for (std::list<Object>::iterator it = objs.begin();
+  for (std::list<Object*>::iterator it = objs.begin();
         it != objs.end(); it++){
-     if((*it).collidedWith(&obj)){
+     if((*it)->collidedWith(&obj)){
        collided = true;
        printf("collided\n");
      }
   }
   return collided;
-/* //TODO: Figure out why this collision 
+  /*
+ //TODO: Figure out why this collision method doesn't work
   bool collided = false;
   int zoneIndex = getZoneIndex(screenY);
   if (zoneIndex > 0){
@@ -203,13 +206,13 @@ bool Map::collidedWith(Object& obj){
     if(collidedWithZone(obj,zoneIndex-1))collided = true;
   }
   return collided;
-*/
+  */
 }
 bool Map::collidedWithZone(Object& obj, int z){
    bool collided = false;
-   for (std::list<Object>::iterator it = objs_zoned[z].begin();
+   for (std::list<Object*>::iterator it = objs_zoned[z].begin();
          it != objs_zoned[z].end(); it++){
-      if((*it).collidedWith(&obj)){
+      if((*it)->collidedWith(&obj)){
         collided = true;
         printf("collided\n");
       }

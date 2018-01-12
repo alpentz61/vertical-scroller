@@ -1,5 +1,16 @@
 #include "object.h"
 
+float Vector::magnitude(){
+  float mag = sqrt(x*x + y*y);
+}
+bool Vector::normalize(){
+  float mag = magnitude();
+  if (mag > 0){
+    x=x/mag;
+    y=y/mag;
+  }
+}
+
 Object::Object():bmp_handle(NULL),map(NULL),x(0),y(0),width(0),height(0){}
 void Object::render(){
    if (bmp_handle == NULL){

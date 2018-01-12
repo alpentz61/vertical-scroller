@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <stdio.h>
+#include <cmath>
 
 #include <jsoncpp/json/json.h>
 

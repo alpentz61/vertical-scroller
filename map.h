@@ -35,8 +35,8 @@ public:
 	int getZoneIndex(long worldY);
 	long screenY;
 	std::list<Config> config; //TODO: For polymorphism to work, these must be Object pointers
-  std::list<Object> objs;
-	std::array<std::list<Object>,NUM_ZONES> objs_zoned;
+  std::list<Object*> objs;
+	std::array<std::list<Object*>,NUM_ZONES> objs_zoned;
 	ALLEGRO_FONT *font;
 	ALLEGRO_BITMAP *honeypot_bitmap;
 	ALLEGRO_BITMAP *switch_bitmap;
