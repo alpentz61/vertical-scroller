@@ -49,6 +49,35 @@ void Object::clearCollisions(){
    collList.clear();
 }
 
+Player::Player():isXLocked(false),isKilled(false),isCaught(false){}
+void Player::animate(){
+
+}
+void honeypotCatch(Honeypot *pot){
+
+}
+bool isKilled(){
+  return false;
+}
+void kill(){
+
+}
+bool moveUp(){
+  return true;
+}
+bool moveDown(){
+  return true;
+}
+bool moveLeft(){
+  return true;
+}
+bool moveRight(){
+  return true;
+}
+void setXLocked(bool locked){
+
+}
+
 Switch::Switch():font(NULL),code(0),codeString("0"),updateLabel(false),counter(0){}
 void Switch::render(){
    map->renderBitmap(bmp_handle, x, y);

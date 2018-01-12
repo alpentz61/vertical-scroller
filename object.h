@@ -45,7 +45,19 @@ public:
 };
 
 class Player : public Object {
-
+   Player();
+   virtual void animate();
+   void honeypotCatch(Honeypot *pot);
+   bool isKilled();
+   void kill();
+   bool moveUp();
+   bool moveDown();
+   bool moveLeft();
+   bool moveRight();
+   void setXLocked(bool locked);
+   bool isXLocked;
+   bool isKilled;
+   bool isCaught;
 };
 
 class Switch : public Object {

@@ -195,7 +195,7 @@ bool Map::collidedWith(Object& obj){
   }
   return collided;
   /*
- //TODO: Figure out why this collision method doesn't work
+ //TODO: Figure out why this collision method doesn't work:
   bool collided = false;
   int zoneIndex = getZoneIndex(screenY);
   if (zoneIndex > 0){
