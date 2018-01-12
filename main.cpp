@@ -25,18 +25,10 @@ int main(int argc, char **argv)
    bool redraw = true;
    bool doexit = false;
    //Player resource
+   Player player_obj;
    ALLEGRO_BITMAP *player = NULL;
    const int PLAYER_SIZE = 32;
-   long player_x = SCREEN_W / 2.0 - PLAYER_SIZE / 2.0;
-   long player_y = SCREEN_H / 2.0 - PLAYER_SIZE / 2.0;
-   //Honeypot
-   /*ALLEGRO_BITMAP *honeypot = NULL;
-   const int NUM_TEST_POTS = 8;
-   Object pot_objects[NUM_TEST_POTS];
-   //Network Switch
-   ALLEGRO_BITMAP *switch_bitmap = NULL;
-   Switch nwSwitch;
-   */
+
    //Map
    Map map;
    //Font
@@ -109,6 +101,11 @@ int main(int argc, char **argv)
      goto FAILED; //TODO: Proper memory management
    }
 
+   player_obj.setBitmapHwnd(player);
+   player_obj.map = &map;
+   player_obj.x = SCREEN_W / 2.0 - PLAYER_SIZE / 2.0;
+   player_obj.y = SCREEN_H / 2.0 - PLAYER_SIZE / 2.0;
+
    al_start_timer(timer);
    while(!doexit)
    {
@@ -116,20 +113,20 @@ int main(int argc, char **argv)
       al_wait_for_event(event_queue, &ev);
 
       if(ev.type == ALLEGRO_EVENT_TIMER) {
-         if(key[KEY_UP] && (player_y-map.screenY) >= 4.0) {
-            player_y -= 4.0;
+         if(key[KEY_UP] && (player_obj.y-map.screenY) >= 4.0) {
+            player_obj.moveUp();
          }
 
-         if(key[KEY_DOWN] && (player_y-map.screenY) <= SCREEN_H - PLAYER_SIZE - 4.0) {
-            player_y += 4.0;
+         if(key[KEY_DOWN] && (player_obj.y-map.screenY) <= SCREEN_H - PLAYER_SIZE - 4.0) {
+            player_obj.moveDown();
          }
 
-         if(key[KEY_LEFT] && player_x >= 4.0) {
-            player_x -= 4.0;
+         if(key[KEY_LEFT] && player_obj.x >= 4.0) {
+            player_obj.moveLeft();
          }
 
-         if(key[KEY_RIGHT] && player_x <= SCREEN_W - PLAYER_SIZE - 4.0) {
-            player_x += 4.0;
+         if(key[KEY_RIGHT] && player_obj.x <= SCREEN_W - PLAYER_SIZE - 4.0) {
+            player_obj.moveRight();
          }
          map.screenY += 1;
          redraw = true;
@@ -185,26 +182,19 @@ int main(int argc, char **argv)
 
          al_clear_to_color(al_map_rgb(0,0,0));
 
-         //Player object
-         Object obj;
-         obj.setBitmapHwnd(player);
-         obj.map = &map;
-         obj.x = player_x;
-         obj.y = player_y;
-
          //Handle collisions
-         map.collidedWith(obj);
-         for (std::list<Collision>::iterator it = obj.collList.begin();
-               it != obj.collList.end(); it++){
+         map.collidedWith(player_obj);
+         for (std::list<Collision>::iterator it = player_obj.collList.begin();
+               it != player_obj.collList.end(); it++){
             printf("Coll Type %d\n",(*it).collType);
          }
-         obj.collList.clear();
+         player_obj.collList.clear();
 
          //Animate the game objects
          map.animate();
 
          //Render the player
-         obj.render();
+         player_obj.render();
 
          //Render all game objects currently active
          map.render();

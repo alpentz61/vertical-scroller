@@ -6,6 +6,8 @@
 
 class Map;
 class Object;
+class Switch;
+class Honeypot;
 
 typedef enum{
    OBJECT,
@@ -14,6 +16,7 @@ typedef enum{
 }CollisionType;
 
 class Vector {
+public:
   float x;
   float y;
   float magnitude();
@@ -45,6 +48,7 @@ public:
 };
 
 class Player : public Object {
+public:
    Player();
    virtual void animate();
    void honeypotCatch(Honeypot *pot);
@@ -55,9 +59,11 @@ class Player : public Object {
    bool moveLeft();
    bool moveRight();
    void setXLocked(bool locked);
-   bool isXLocked;
-   bool isKilled;
+   bool xLocked;
+   bool killed;
    bool isCaught;
+   int chaseTimer;
+   Honeypot *honeypot;
 };
 
 class Switch : public Object {
@@ -71,6 +77,10 @@ public:
    char codeString[4];
    bool updateLabel;
    int counter;
+
+};
+
+class Honeypot : public Object {
 
 };
 

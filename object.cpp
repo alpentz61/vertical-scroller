@@ -49,33 +49,75 @@ void Object::clearCollisions(){
    collList.clear();
 }
 
-Player::Player():isXLocked(false),isKilled(false),isCaught(false){}
+Player::Player():xLocked(false),killed(false),isCaught(false){}
 void Player::animate(){
-
+   if (isCaught){
+      //Move towards the honeypot
+      Vector vect;
+      vect.x = honeypot->x - x;
+      vect.y = honeypot->y - y;
+      vect.normalize();
+      vect.x *= 4;
+      vect.y *= 4;
+      x += vect.x;
+      y += vect.y;
+      //Move for duration specified by chase timer
+      //This should be close enough to kill the player
+      chaseTimer--;
+      if (chaseTimer <= 0){
+        isCaught = false;
+      }
+   }
 }
-void honeypotCatch(Honeypot *pot){
-
+void Player::honeypotCatch(Honeypot *pot){
+   honeypot = pot;
+   isCaught = true;
+   chaseTimer = 300; //Chase for 5 s.
 }
-bool isKilled(){
-  return false;
+bool Player::isKilled(){
+  return killed;
 }
-void kill(){
-
+void Player::kill(){
+   killed = true;
 }
-bool moveUp(){
-  return true;
+bool Player::moveUp(){
+   if (!isCaught){
+      y += 4;
+     return true;
+   }
+   else {
+     return false;
+   }
 }
-bool moveDown(){
-  return true;
+bool Player::moveDown(){
+  if (!isCaught){
+     y -= 4;
+    return true;
+  }
+  else {
+    return false;
+  }
 }
-bool moveLeft(){
-  return true;
+bool Player::moveLeft(){
+  if (!isCaught && !xLocked){
+     x -= 4;
+    return true;
+  }
+  else {
+    return false;
+  }
 }
-bool moveRight(){
-  return true;
+bool Player::moveRight(){
+  if (!isCaught && !xLocked){
+     x += 4;
+    return true;
+  }
+  else {
+    return false;
+  }
 }
-void setXLocked(bool locked){
-
+void Player::setXLocked(bool locked){
+   xLocked = locked;
 }
 
 Switch::Switch():font(NULL),code(0),codeString("0"),updateLabel(false),counter(0){}
