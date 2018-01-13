@@ -63,6 +63,13 @@ bool Map::initialize(){
    nwSwitch->font = font;
    objs.push_back(nwSwitch);
 
+   Scanner *scanner = new Scanner;
+   scanner->setBitmapHwnd(scanner_bitmap);
+   scanner->map = this;
+   scanner->x = 0;
+   scanner->y= 1000;
+   objs.push_back(scanner);
+
    //Paritition the objects into zones
    for (std::list<Object*>::iterator it = objs.begin(); it != objs.end(); it++){
      int zoneIndex = getZoneIndex((*it)->y);

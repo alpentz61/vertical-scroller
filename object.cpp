@@ -190,7 +190,7 @@ void Switch::animate(){
    }
 }
 
-Scanner::Scanner():isTracking(false),counter(0){}
+Scanner::Scanner():isTracking(false),player(NULL),chaseTimer(0),moveSpeed(4){}
 bool Scanner::collidedWith(Object *other){
    //Detect kill collisions on impact
    if (x < (other->x + other->width) &&
@@ -221,26 +221,32 @@ bool Scanner::collidedWith(Object *other){
 void Scanner::animate(){
   if (isTracking){
     Vector vect;
-    vect.x = other->x - x;
-    vect.y = other->y - y;
+    vect.x = player->x - x;
+    vect.y = player->y - y;
     vect.normalize();
     vect.x *= 4;
     vect.y *= 4;
-    x += vect.x;
-    y += vect.y;
+    x += (long)vect.x;
+    y += (long)vect.y;
     //Move for duration specified by chase timer
     //This should be close enough to kill the player
     chaseTimer--;
     if (chaseTimer <= 0){
-      isCaught = false;
+      isTracking = false;
     }
   }
-  
-}
-
+  else {
+    x += moveSpeed;
+    if (x > SCREEN_W-width){
+      moveSpeed = -4;
+    }
+    if (x < 0){
+      moveSpeed = 4;
+    }
+  }
 }
 void Scanner::trackPlayer(Player *player_){
   player = player_;
   isTracking = true;
-  counter = 300;
+  chaseTimer = 300;
 }

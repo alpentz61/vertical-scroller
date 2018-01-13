@@ -4,6 +4,9 @@
 #include "game.h"
 #include "map.h"
 
+#define DETECT_DIST 300
+const int SCREEN_W = 800;//TODO: remove constant duplication
+
 class Map;
 class Object;
 class Switch;
@@ -83,14 +86,16 @@ public:
    int counter;
 };
 
-#define DETECT_DIST = 300
 class Scanner : public Object {
+public:
   Scanner();
   virtual bool collidedWith(Object *other);
   virtual void animate();
   void trackPlayer(Player *player);
   bool isTracking;
-  int counter;
+  Player *player;
+  int chaseTimer;
+  int moveSpeed;
 };
 
 class Honeypot : public Object {
