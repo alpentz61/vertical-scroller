@@ -4,7 +4,7 @@
 #include "game.h"
 #include "map.h"
 
-#define DETECT_DIST 300
+#define DETECT_DIST 300.0
 const int SCREEN_W = 800;//TODO: remove constant duplication
 
 class Map;

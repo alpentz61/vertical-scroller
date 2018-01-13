@@ -6,7 +6,7 @@
 //To Build: g++ main.cpp -lallegro -lallegro_image
 
 const float FPS = 60;
-const int SCREEN_W = 800;
+//const int SCREEN_W = 800;
 const int SCREEN_H = 800;
 enum MYKEYS {
    KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
@@ -182,19 +182,55 @@ int main(int argc, char **argv)
 
          al_clear_to_color(al_map_rgb(0,0,0));
 
+         bool xLocked = false;
          //Handle collisions
          map.collidedWith(player_obj);
          for (std::list<Collision>::iterator it = player_obj.collList.begin();
                it != player_obj.collList.end(); it++){
-            printf("Coll Type %d\n",(*it).collType);
+            Collision *collision = &(*it);
+            //Scanner collisions
+            if (collision->collObject->objType == SCANNER){
+              Scanner *collScanner = dynamic_cast<Scanner*>(collision->collObject);
+              if (collScanner != NULL){
+                if (collision->collType == SCANNER_TRACK){
+                  collScanner->trackPlayer(&player_obj);
+                }
+                else if (collision->collType == SCANNER_KILL){
+                  player_obj.kill();
+                }
+              }
+            }
+            //Switch collisions
+            if (collision->collObject->objType == SWITCH){
+              Switch *nwSwitch = dynamic_cast<Switch*>(collision->collObject);
+              if (nwSwitch != NULL){
+                if (collision->collType == SWITCH_PASS){
+                  xLocked = true;
+                }
+                else if (collision->collType == SWITCH_KILL){
+                  player_obj.kill();
+                }
+              }
+            }
          }
          player_obj.collList.clear();
+
+         //Lock player x if in network switch tunnel:
+         if (xLocked){
+           player_obj.setXLocked(true);
+         }
+         else {
+           player_obj.setXLocked(false);
+         }
 
          //Animate the game objects
          map.animate();
 
-         //Render the player
-         player_obj.render();
+         if (!player_obj.isKilled()){
+           //Render the player
+           player_obj.render();
+         }
+
 
          //Render all game objects currently active
          map.render();

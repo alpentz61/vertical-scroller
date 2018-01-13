@@ -1,7 +1,7 @@
 #include "object.h"
 
 float Vector::magnitude(){
-  float mag = sqrt(x*x + y*y);
+  return sqrt(x*x + y*y);
 }
 bool Vector::normalize(){
   float mag = magnitude();
@@ -210,8 +210,8 @@ bool Scanner::collidedWith(Object *other){
       return true;
    } else { //Start scanning when within a given distance
       Vector vect;
-      vect.x = other->x - x;
-      vect.y = other->y - y;
+      vect.x = (float)(other->x - x);
+      vect.y = (float)(other->y - y);
       float magnitude = vect.magnitude();
       if (magnitude < DETECT_DIST){
          Collision collision;
