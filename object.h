@@ -22,13 +22,12 @@ typedef enum{
    SCANNER_KILL
 }CollisionType;
 typedef enum{
-  OBJECT,
   PLAYER,
   SWITCH,
   SCANNER,
   HONEYPOT,
   FIREWALL
-}ObjectType
+}ObjectType;
 
 class Vector {
 public:
@@ -60,6 +59,7 @@ public:
    long width;
    long height;
    std::list<Collision> collList;
+   ObjectType objType;
 };
 
 class Player : public Object {
