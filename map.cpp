@@ -8,7 +8,7 @@ bool Map::initialize(){
    if (!loadResources()){
      return false;
    }
-
+/*
    //Create game objects
    //honeypot:
    const int NUM_POTS = 16;
@@ -54,6 +54,7 @@ bool Map::initialize(){
       *obj = pot_objects[i];
       objs.push_back(obj);
    }
+   */
    //network switch
    Switch *nwSwitch = new Switch;
    nwSwitch->setBitmapHwnd(switch_bitmap);

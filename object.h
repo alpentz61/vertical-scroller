@@ -21,6 +21,14 @@ typedef enum{
    SCANNER_TRACK,
    SCANNER_KILL
 }CollisionType;
+typedef enum{
+  OBJECT,
+  PLAYER,
+  SWITCH,
+  SCANNER,
+  HONEYPOT,
+  FIREWALL
+}ObjectType
 
 class Vector {
 public:

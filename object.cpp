@@ -11,7 +11,9 @@ bool Vector::normalize(){
   }
 }
 
-Object::Object():bmp_handle(NULL),map(NULL),x(0),y(0),width(0),height(0){}
+Object::Object():bmp_handle(NULL),map(NULL),x(0),y(0),width(0),height(0){
+  std::cout << "Object constructor\n";
+}
 void Object::render(){
    if (bmp_handle == NULL){
      std::cerr << "Handle is null\n";
@@ -119,7 +121,9 @@ void Player::setXLocked(bool locked){
    xLocked = locked;
 }
 
-Switch::Switch():font(NULL),code(0),codeString("0"),updateLabel(false),counter(0){}
+Switch::Switch():font(NULL),code(0),codeString("0"),updateLabel(false),counter(0){
+  std::cout << "Switch constructor\n";
+}
 void Switch::render(){
    map->renderBitmap(bmp_handle, x, y);
    long renderY = ZONE_HEIGHT - ((-12+y)-map->screenY);
