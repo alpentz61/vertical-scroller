@@ -12,7 +12,7 @@ bool Map::initialize(){
    //Create game objects
    //honeypot:
    const int NUM_POTS = 16;
-   Object pot_objects[NUM_POTS];
+   Honeypot pot_objects[NUM_POTS];
    for (int i=0; i<NUM_POTS; i++){
       pot_objects[i].setBitmapHwnd(honeypot_bitmap);
       pot_objects[i].map = this;
@@ -38,7 +38,7 @@ bool Map::initialize(){
    pot_objects[9].x = 100;
    pot_objects[9].y = 1900;
    pot_objects[10].x = 200;
-   pot_objects[10].y = 1900; 
+   pot_objects[10].y = 1900;
    pot_objects[11].x = 300;
    pot_objects[11].y = 2200;
    pot_objects[12].x = 400;
@@ -50,9 +50,9 @@ bool Map::initialize(){
    pot_objects[15].x = 600;
    pot_objects[15].y = 2500;
    for (int i=0; i<NUM_POTS; i++){
-      Object *obj = new Object;
-      *obj = pot_objects[i];
-      objs.push_back(obj);
+      Honeypot *honeypot = new Honeypot;
+      *honeypot = pot_objects[i];
+      objs.push_back(honeypot);
    }
 
    //network switch

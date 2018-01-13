@@ -11,7 +11,8 @@ bool Vector::normalize(){
   }
 }
 
-Object::Object():bmp_handle(NULL),map(NULL),x(0),y(0),width(0),height(0){
+Object::Object(ObjectType objType_):objType(objType_),bmp_handle(NULL),map(NULL),
+    x(0),y(0),width(0),height(0){
   std::cout << "Object constructor\n";
 }
 void Object::render(){
@@ -50,7 +51,7 @@ void Object::clearCollisions(){
    collList.clear();
 }
 
-Player::Player():xLocked(false),killed(false),isCaught(false){}
+Player::Player():Object(PLAYER),xLocked(false),killed(false),isCaught(false){}
 void Player::animate(){
    if (isCaught){
       //Move towards the honeypot
@@ -121,7 +122,7 @@ void Player::setXLocked(bool locked){
    xLocked = locked;
 }
 
-Switch::Switch():font(NULL),code(0),codeString("0"),updateLabel(false),counter(0){
+Switch::Switch():Object(SWITCH),font(NULL),code(0),codeString("0"),updateLabel(false),counter(0){
   std::cout << "Switch constructor\n";
 }
 void Switch::render(){
@@ -194,7 +195,7 @@ void Switch::animate(){
    }
 }
 
-Scanner::Scanner():isTracking(false),player(NULL),chaseTimer(0),moveSpeed(4){}
+Scanner::Scanner():Object(SCANNER),isTracking(false),player(NULL),chaseTimer(0),moveSpeed(4){}
 bool Scanner::collidedWith(Object *other){
    //Detect kill collisions on impact
    if (x < (other->x + other->width) &&
@@ -254,3 +255,5 @@ void Scanner::trackPlayer(Player *player_){
   isTracking = true;
   chaseTimer = 300;
 }
+
+Honeypot::Honeypot():Object(HONEYPOT){}

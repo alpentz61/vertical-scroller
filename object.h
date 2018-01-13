@@ -45,7 +45,7 @@ public:
 
 class Object {
 public:
-   Object();
+   Object(ObjectType objType_);
    virtual void render();
    virtual bool collidedWith(Object *other);
    virtual void animate();
@@ -107,7 +107,8 @@ public:
 };
 
 class Honeypot : public Object {
-
+public:
+  Honeypot();
 };
 
 #endif
