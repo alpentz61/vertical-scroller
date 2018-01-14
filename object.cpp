@@ -74,7 +74,7 @@ void Player::animate(){
 void Player::honeypotCatch(Honeypot *pot){
    honeypot = pot;
    isCaught = true;
-   chaseTimer = 300; //Chase for 5 s.
+   chaseTimer = 1000; //Chase for 10 s.
 }
 bool Player::isKilled(){
   return killed;
@@ -257,3 +257,28 @@ void Scanner::trackPlayer(Player *player_){
 }
 
 Honeypot::Honeypot():Object(HONEYPOT){}
+bool Honeypot::collidedWith(Object *other){
+  Player *player = dynamic_cast<Player*>(other);
+  if (player == NULL){
+    return false;
+  }
+  //Detect kill collisions on impact
+  if (x < (player->x + player->width) &&
+     (x + width) > other->x        &&
+     y < (player->y + player->height) &&
+     (y + height) > other->y
+     ){
+     player->kill();
+     return true;
+  } else { //Start scanning when within a given distance
+     Vector vect;
+     vect.x = (float)(other->x - x);
+     vect.y = (float)(other->y - y);
+     float magnitude = vect.magnitude();
+     if (magnitude < DETECT_DIST){
+        player->honeypotCatch(this);
+        return true;
+    }
+  }
+  return false;
+}

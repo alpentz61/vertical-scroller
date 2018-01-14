@@ -183,7 +183,7 @@ int main(int argc, char **argv)
          al_clear_to_color(al_map_rgb(0,0,0));
 
          bool xLocked = false;
-         //Handle collisions
+         //Handle collisions:
          map.collidedWith(player_obj);
          for (std::list<Collision>::iterator it = player_obj.collList.begin();
                it != player_obj.collList.end(); it++){
@@ -230,7 +230,6 @@ int main(int argc, char **argv)
            //Render the player
            player_obj.render();
          }
-
 
          //Render all game objects currently active
          map.render();

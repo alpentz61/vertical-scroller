@@ -109,6 +109,7 @@ public:
 class Honeypot : public Object {
 public:
   Honeypot();
+  virtual bool collidedWith(Object *other);
 };
 
 #endif
