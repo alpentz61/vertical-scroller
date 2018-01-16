@@ -197,27 +197,25 @@ void Switch::animate(){
 
 Scanner::Scanner():Object(SCANNER),isTracking(false),player(NULL),chaseTimer(0),moveSpeed(4){}
 bool Scanner::collidedWith(Object *other){
-   //Detect kill collisions on impact
-   if (x < (other->x + other->width) &&
-      (x + width) > other->x        &&
-      y < (other->y + other->height) &&
-      (y + height) > other->y
-      ){
-      Collision collision;
-      collision.collObject=this;
-      collision.collType=SCANNER_KILL;
-      other->setCollision(collision);
+  Player *player = dynamic_cast<Player*>(other);
+  if (player == NULL){
+    return false;
+  }
+  //Detect kill collisions on impact
+  if (x < (player->x + player->width) &&
+    (x + width) > player->x        &&
+    y < (player->y + player->height) &&
+    (y + height) > player->y
+    ){
+      player->kill();
       return true;
    } else { //Start scanning when within a given distance
       Vector vect;
-      vect.x = (float)(other->x - x);
-      vect.y = (float)(other->y - y);
+      vect.x = (float)(player->x - x);
+      vect.y = (float)(player->y - y);
       float magnitude = vect.magnitude();
       if (magnitude < DETECT_DIST){
-         Collision collision;
-         collision.collObject=this;
-         collision.collType=SCANNER_TRACK;
-         other->setCollision(collision);
+         trackPlayer(player);
          return true;
      }
    }
@@ -262,11 +260,12 @@ bool Honeypot::collidedWith(Object *other){
   if (player == NULL){
     return false;
   }
+  printf("In Honeypot collision\n");
   //Detect kill collisions on impact
   if (x < (player->x + player->width) &&
-     (x + width) > other->x        &&
+     (x + width) > player->x        &&
      y < (player->y + player->height) &&
-     (y + height) > other->y
+     (y + height) > player->y
      ){
      player->kill();
      return true;
@@ -281,4 +280,59 @@ bool Honeypot::collidedWith(Object *other){
     }
   }
   return false;
+}
+
+
+Firewall::Firewall():Object(FIREWALL),x1_disp(-400),y1_disp(0),x2_disp(400),
+    y2_disp(0),movingOut(true){}
+void Firewall::render(){
+  long x1 = x + x1_disp;
+  long x2 = x + x2_disp;
+  map->renderBitmap(bmp_handle,x1,y);
+  map->renderBitmap(bmp_handle,x2,y);
+}
+bool Firewall::collidedWith(Object *other){
+  long x1 = x + x1_disp;
+  long x2 = x + x2_disp;
+  Player *player = dynamic_cast<Player*>(other);
+  if (player == NULL){
+    return false;
+  }
+  //Detect kill collisions with first firewall rectangle:
+  if (x1 < (player->x + player->width) &&
+     (x1 + width) > player->x        &&
+     y < (player->y + player->height) &&
+     (y + height) > player->y
+     ){
+     player->kill();
+     return true;
+  } else if (x2 < (player->x + player->width) &&
+     (x2 + width) > player->x        &&
+     y < (player->y + player->height) &&
+     (y + height) > player->y
+     ){
+     player->kill();
+     return true;
+  }
+  return false;
+}
+void Firewall::animate(){
+  if (movingOut){
+    if (x1_disp > -500){
+      x1_disp-=1;
+      x2_disp+=1;
+    }
+    else {
+      movingOut = false;
+    }
+  }
+  else {
+    if (x1_disp < -400){
+      x1_disp+=1;
+      x2_disp-=1;
+    }
+    else {
+      movingOut = true;
+    }
+  }
 }

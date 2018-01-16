@@ -71,9 +71,17 @@ bool Map::initialize(){
    scanner->y= 1000;
    objs.push_back(scanner);
 
+   Firewall *firewall = new Firewall;
+   firewall->setBitmapHwnd(firewall_bitmap);
+   firewall->map = this;
+   firewall->x = 0;
+   firewall->y = 800;
+   //objs.push_back(firewall);
+
    //Paritition the objects into zones
    for (std::list<Object*>::iterator it = objs.begin(); it != objs.end(); it++){
      int zoneIndex = getZoneIndex((*it)->y);
+     std::cout << "Adding object to zone " << zoneIndex << "\n";
      if (zoneIndex < NUM_ZONES){
        objs_zoned.at(zoneIndex).push_back((*it));
      }
@@ -194,27 +202,15 @@ void Map::animateZone(int z){
 }
 bool Map::collidedWith(Object& obj){
   bool collided = false;
-  for (std::list<Object*>::iterator it = objs.begin();
-        it != objs.end(); it++){
-     if((*it)->collidedWith(&obj)){
-       collided = true;
-       printf("collided\n");
-     }
-  }
-  return collided;
-  /*
- //TODO: Figure out why this collision method doesn't work:
-  bool collided = false;
   int zoneIndex = getZoneIndex(screenY);
   if (zoneIndex > 0){
     if(collidedWithZone(obj,zoneIndex-1))collided = true;
   }
-  if(collidedWithZone(obj,zoneIndex-1))collided = true;
+  if(collidedWithZone(obj,zoneIndex))collided = true;
   if (zoneIndex < (NUM_ZONES-1)){
-    if(collidedWithZone(obj,zoneIndex-1))collided = true;
+    if(collidedWithZone(obj,zoneIndex+1))collided = true;
   }
   return collided;
-  */
 }
 bool Map::collidedWithZone(Object& obj, int z){
    bool collided = false;

@@ -4,7 +4,7 @@
 #include "game.h"
 #include "map.h"
 
-#define DETECT_DIST 300.0
+#define DETECT_DIST 200.0
 const int SCREEN_W = 800;//TODO: remove constant duplication
 
 class Map;
@@ -112,4 +112,16 @@ public:
   virtual bool collidedWith(Object *other);
 };
 
+class Firewall : public Object {
+public:
+  Firewall();
+  virtual void render();
+  virtual bool collidedWith(Object *other);
+  virtual void animate();
+  long x1_disp;
+  long y1_disp;
+  long x2_disp;
+  long y2_disp;
+  bool movingOut;
+};
 #endif

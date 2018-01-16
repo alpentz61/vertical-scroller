@@ -188,23 +188,12 @@ int main(int argc, char **argv)
          for (std::list<Collision>::iterator it = player_obj.collList.begin();
                it != player_obj.collList.end(); it++){
             Collision *collision = &(*it);
-            //Scanner collisions
-            if (collision->collObject->objType == SCANNER){
-              Scanner *collScanner = dynamic_cast<Scanner*>(collision->collObject);
-              if (collScanner != NULL){
-                if (collision->collType == SCANNER_TRACK){
-                  collScanner->trackPlayer(&player_obj);
-                }
-                else if (collision->collType == SCANNER_KILL){
-                  player_obj.kill();
-                }
-              }
-            }
-            //Switch collisions
+            //1. Switch collisions
             if (collision->collObject->objType == SWITCH){
               Switch *nwSwitch = dynamic_cast<Switch*>(collision->collObject);
               if (nwSwitch != NULL){
                 if (collision->collType == SWITCH_PASS){
+                  //xLocked creates a special case requiring collision handling here
                   xLocked = true;
                 }
                 else if (collision->collType == SWITCH_KILL){
@@ -212,6 +201,9 @@ int main(int argc, char **argv)
                 }
               }
             }
+            //2. Scanner Collisions... Handled in collidedWith()
+            //3. Firewall Collisions... Handled in collidedWith()
+            //4. Honepot Collisiions... Handled in collidedWith()
          }
          player_obj.collList.clear();
 
@@ -225,6 +217,9 @@ int main(int argc, char **argv)
 
          //Animate the game objects
          map.animate();
+
+         //Animate the player
+         player_obj.animate();
 
          if (!player_obj.isKilled()){
            //Render the player
