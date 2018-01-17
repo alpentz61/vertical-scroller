@@ -9,6 +9,11 @@ bool Map::initialize(){
      return false;
    }
 
+   std::string cfgFile = "map_cfg.json";
+   if (!loadConfig(cfgFile)){
+     return false;
+   }
+
    //Create game objects
    //honeypot:
    const int NUM_POTS = 16;
@@ -17,10 +22,10 @@ bool Map::initialize(){
       pot_objects[i].setBitmapHwnd(honeypot_bitmap);
       pot_objects[i].map = this;
    }
-   pot_objects[0].x = 0;
-   pot_objects[0].y = 100;
-   pot_objects[1].x = 700;
-   pot_objects[1].y = 100;
+   pot_objects[0].x = 100;
+   pot_objects[0].y = 400;
+   pot_objects[1].x = 600;
+   pot_objects[1].y = 400;
    pot_objects[2].x = 0;
    pot_objects[2].y = 800;
    pot_objects[3].x = 700;
@@ -101,7 +106,7 @@ bool Map::loadResources(){
    }
 
    //Load the honeypot sprites:
-   honeypot_bitmap = al_load_bitmap("images/pumpkin_open_clipart.png");
+   honeypot_bitmap = al_load_bitmap("images/honeypot_open_clipart.png");
    if (!honeypot_bitmap){
       fprintf(stderr, "failed to create honeypot bitmap!\n");
       goto FAILED_HONEYPOT;
@@ -128,8 +133,17 @@ bool Map::loadResources(){
       goto FAILED_SCANNER;
    }
 
-   return true; //TODO: Handle cleanup of bitmaps after they are done being used.
+   //Load flag bitmap
+   flag_bitmap = al_load_bitmap("images/flag_open_clipart.png");
+   if (!flag_bitmap){
+      fprintf(stderr, "failed to create flag bitmap!\n");
+      goto FAILED_FLAG;
+   }
 
+   return true; //TODO: Handle cleanup of bitmaps after they are done being used if no error.
+
+   al_destroy_bitmap(flag_bitmap);
+FAILED_FLAG:
    al_destroy_bitmap(scanner_bitmap);
 FAILED_SCANNER:
    al_destroy_bitmap(firewall_bitmap);
@@ -143,7 +157,6 @@ FAILED_FONT:
    return false;
 }
 
-/*
 bool Map::loadConfig(const std::string& cfg_file) {
    std::ifstream infile(cfg_file);
    Json::Value root;
@@ -153,14 +166,18 @@ bool Map::loadConfig(const std::string& cfg_file) {
      std::cerr << "Error parsing the map config file.\n";
      return false;
    }
+
    for (Json::Value::iterator it = root.begin(); it != root.end(); it++){
-      Json::Value key = it.key();
-      Json::Value value = (*it);
-      std::cout<<"Key: "<<key.toStyledString();
-      std::cout<<"Value: "<<value.toStyledString();
+      Json::Value obj = (*it);
+      ObjectConfig cfg;
+      cfg.x = obj["x"].asInt();
+      cfg.y = obj["y"].asInt();
+      cfg.type = obj["type"].asString();
+      config.push_back(cfg);
    }
+   return true;
 }
-*/
+
 void Map::render(){
   int zoneIndex = getZoneIndex(screenY);
   if (zoneIndex > 0){

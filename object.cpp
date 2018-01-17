@@ -12,9 +12,7 @@ bool Vector::normalize(){
 }
 
 Object::Object(ObjectType objType_):objType(objType_),bmp_handle(NULL),map(NULL),
-    x(0),y(0),width(0),height(0){
-  std::cout << "Object constructor\n";
-}
+    x(0),y(0),width(0),height(0){}
 void Object::render(){
    if (bmp_handle == NULL){
      std::cerr << "Handle is null\n";
@@ -122,9 +120,7 @@ void Player::setXLocked(bool locked){
    xLocked = locked;
 }
 
-Switch::Switch():Object(SWITCH),font(NULL),code(0),codeString("0"),updateLabel(false),counter(0){
-  std::cout << "Switch constructor\n";
-}
+Switch::Switch():Object(SWITCH),font(NULL),code(0),codeString("0"),updateLabel(false),counter(0){}
 void Switch::render(){
    map->renderBitmap(bmp_handle, x, y,height);
    long renderY = ZONE_HEIGHT - ((-12+y)-map->screenY);
@@ -260,7 +256,6 @@ bool Honeypot::collidedWith(Object *other){
   if (player == NULL){
     return false;
   }
-  printf("In Honeypot collision\n");
   //Detect kill collisions on impact
   if (x < (player->x + player->width) &&
      (x + width) > player->x        &&

@@ -124,4 +124,11 @@ public:
   long y2_disp;
   bool movingOut;
 };
+/*
+class Flag : public Object {
+public:
+  Flag();
+  virtual bool collidedWith(Object)
+};*/
+
 #endif

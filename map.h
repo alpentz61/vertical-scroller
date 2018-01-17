@@ -12,11 +12,11 @@
 
 class Object;
 
-struct Config {
+class ObjectConfig {
+public:
 	long x;
 	long y;
-  std::string object_type;
-	std::string object_label;
+  std::string type;
 };
 
 class Map {
@@ -24,7 +24,7 @@ public:
 	Map();
   bool initialize();
 	bool loadResources();
-	//bool loadConfig(const std::string& cfg);
+	bool loadConfig(const std::string& cfg);
 	void render();
 	void renderZone(int zoneIndex);
 	void renderBitmap(ALLEGRO_BITMAP *bitmap, long x, long y, long height);
@@ -35,7 +35,7 @@ public:
 	int getZoneIndex(long worldY);
   long getScreenY(long worldY,long height);
 	long screenY;
-	std::list<Config> config;
+	std::list<ObjectConfig> config;
   std::list<Object*> objs;
 	std::array<std::list<Object*>,NUM_ZONES> objs_zoned;
 	ALLEGRO_FONT *font;
@@ -43,8 +43,7 @@ public:
 	ALLEGRO_BITMAP *switch_bitmap;
 	ALLEGRO_BITMAP *firewall_bitmap;
 	ALLEGRO_BITMAP *scanner_bitmap;
-
-
+  ALLEGRO_BITMAP *flag_bitmap;
 };
 
 #endif

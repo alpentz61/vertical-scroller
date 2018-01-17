@@ -136,25 +136,6 @@ int main(int argc, char **argv)
          if ((screenY < 0) || (screenY > SCREEN_H-player_obj.height)){
            player_obj.kill();
          }
-         /*
-        if ((player_obj.y-map.screenY) >= 4.0)) {
-              player_obj.moveUp();
-            }
-            else {
-              player_obj.kill();
-            }
-         }
-
-         if(key[KEY_DOWN]){}
-            if ((player_obj.y-map.screenY) <= SCREEN_H - PLAYER_SIZE - 4.0) {
-              player_obj.moveDown()
-            }
-            else {
-              player
-            }
-         }
-         */
-
 
          if(key[KEY_LEFT] && player_obj.x >= 4.0) {
             player_obj.moveLeft();
