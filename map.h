@@ -33,8 +33,9 @@ public:
 	bool collidedWith(Object& obj);
 	bool collidedWithZone(Object& obj, int zoneIndexc);
 	int getZoneIndex(long worldY);
+  long getScreenY(long worldY,long height);
 	long screenY;
-	std::list<Config> config; //TODO: For polymorphism to work, these must be Object pointers
+	std::list<Config> config;
   std::list<Object*> objs;
 	std::array<std::list<Object*>,NUM_ZONES> objs_zoned;
 	ALLEGRO_FONT *font;

@@ -18,6 +18,9 @@ const char* HONEY_POT_FILE = "images/pumpkin_open_clipart.png";
 int main(int argc, char **argv)
 {
    bool success = false;
+   bool gameOver = false;
+   bool playerWins = false;
+   int gameOverTimer = 500;
    ALLEGRO_DISPLAY *display = NULL;
    ALLEGRO_EVENT_QUEUE *event_queue = NULL;
    ALLEGRO_TIMER *timer = NULL;
@@ -55,6 +58,13 @@ int main(int argc, char **argv)
    //Initialize the ttf add on
    if (!al_init_ttf_addon()){
       fprintf(stderr, "failed to initialize ttf addon!\n");
+      goto FAILED;
+   }
+
+   //Load the font
+   font = al_load_ttf_font("chintzys.ttf",72,0 );
+   if (!font){
+      fprintf(stderr, "Could not load 'chintzys_.ttf'.\n");
       goto FAILED;
    }
 
@@ -113,13 +123,38 @@ int main(int argc, char **argv)
       al_wait_for_event(event_queue, &ev);
 
       if(ev.type == ALLEGRO_EVENT_TIMER) {
-         if(key[KEY_UP] && (player_obj.y-map.screenY) >= 4.0) {
-            player_obj.moveUp();
+
+         if(key[KEY_UP]){
+           player_obj.moveUp();
          }
 
-         if(key[KEY_DOWN] && (player_obj.y-map.screenY) <= SCREEN_H - PLAYER_SIZE - 4.0) {
-            player_obj.moveDown();
+         if (key[KEY_DOWN]){
+           player_obj.moveDown();
          }
+
+         long screenY = map.getScreenY(player_obj.y,player_obj.height);
+         if ((screenY < 0) || (screenY > SCREEN_H-player_obj.height)){
+           player_obj.kill();
+         }
+         /*
+        if ((player_obj.y-map.screenY) >= 4.0)) {
+              player_obj.moveUp();
+            }
+            else {
+              player_obj.kill();
+            }
+         }
+
+         if(key[KEY_DOWN]){}
+            if ((player_obj.y-map.screenY) <= SCREEN_H - PLAYER_SIZE - 4.0) {
+              player_obj.moveDown()
+            }
+            else {
+              player
+            }
+         }
+         */
+
 
          if(key[KEY_LEFT] && player_obj.x >= 4.0) {
             player_obj.moveLeft();
@@ -221,13 +256,33 @@ int main(int argc, char **argv)
          //Animate the player
          player_obj.animate();
 
+         //Render the player if they haven't been killed
          if (!player_obj.isKilled()){
-           //Render the player
            player_obj.render();
+         }
+         else {
+           gameOver = true;
          }
 
          //Render all game objects currently active
          map.render();
+
+         //Display game over message then exit the game
+         if (gameOver){
+           char *winMsg;
+           if (playerWins){
+             winMsg = "You Win!";
+           }
+           else {
+             winMsg = "You Lose!";
+           }
+           al_draw_text(font, al_map_rgb(255,255,255), 230,300,0, "Game Over");
+           al_draw_text(font, al_map_rgb(255,255,255), 250,400,0, winMsg);
+           gameOverTimer--;
+           if (gameOverTimer <= 0){
+             doexit = true;
+           }
+         }
 
          al_flip_display();
       }

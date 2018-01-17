@@ -226,3 +226,6 @@ bool Map::collidedWithZone(Object& obj, int z){
 int Map::getZoneIndex(long worldY){
    return worldY / ZONE_HEIGHT;
 }
+long Map::getScreenY(long worldY,long height){
+  return ZONE_HEIGHT - ((worldY - screenY)+height);
+}
