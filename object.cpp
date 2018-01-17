@@ -19,7 +19,7 @@ void Object::render(){
    if (bmp_handle == NULL){
      std::cerr << "Handle is null\n";
    }
-   map->renderBitmap(bmp_handle, x, y);
+   map->renderBitmap(bmp_handle, x, y,height);
 }
 bool Object::collidedWith(Object *other){
    if (x < (other->x + other->width) &&
@@ -126,7 +126,7 @@ Switch::Switch():Object(SWITCH),font(NULL),code(0),codeString("0"),updateLabel(f
   std::cout << "Switch constructor\n";
 }
 void Switch::render(){
-   map->renderBitmap(bmp_handle, x, y);
+   map->renderBitmap(bmp_handle, x, y,height);
    long renderY = ZONE_HEIGHT - ((-12+y)-map->screenY);
    al_draw_text(font, al_map_rgb(255,255,255), 372,renderY,0, codeString);
 }
@@ -283,13 +283,13 @@ bool Honeypot::collidedWith(Object *other){
 }
 
 
-Firewall::Firewall():Object(FIREWALL),x1_disp(-400),y1_disp(0),x2_disp(400),
+Firewall::Firewall():Object(FIREWALL),x1_disp(0),y1_disp(0),x2_disp(400),
     y2_disp(0),movingOut(true){}
 void Firewall::render(){
   long x1 = x + x1_disp;
   long x2 = x + x2_disp;
-  map->renderBitmap(bmp_handle,x1,y);
-  map->renderBitmap(bmp_handle,x2,y);
+  map->renderBitmap(bmp_handle,x1,y,height);
+  map->renderBitmap(bmp_handle,x2,y,height);
 }
 bool Firewall::collidedWith(Object *other){
   long x1 = x + x1_disp;
@@ -318,7 +318,7 @@ bool Firewall::collidedWith(Object *other){
 }
 void Firewall::animate(){
   if (movingOut){
-    if (x1_disp > -500){
+    if (x1_disp > -100){
       x1_disp-=1;
       x2_disp+=1;
     }
@@ -327,7 +327,7 @@ void Firewall::animate(){
     }
   }
   else {
-    if (x1_disp < -400){
+    if (x1_disp < 0){
       x1_disp+=1;
       x2_disp-=1;
     }

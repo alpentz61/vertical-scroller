@@ -76,7 +76,7 @@ bool Map::initialize(){
    firewall->map = this;
    firewall->x = 0;
    firewall->y = 800;
-   //objs.push_back(firewall);
+   objs.push_back(firewall);
 
    //Paritition the objects into zones
    for (std::list<Object*>::iterator it = objs.begin(); it != objs.end(); it++){
@@ -180,8 +180,8 @@ void Map::renderZone(int z){
       }
    }
 }
-void Map::renderBitmap(ALLEGRO_BITMAP *bitmap, long x, long y){
-   long renderY = ZONE_HEIGHT - (y - screenY);
+void Map::renderBitmap(ALLEGRO_BITMAP *bitmap, long x, long y,long height){
+   long renderY = ZONE_HEIGHT - ((y - screenY)+height);
    al_draw_bitmap(bitmap, x, renderY, 0);
 }
 void Map::animate(){

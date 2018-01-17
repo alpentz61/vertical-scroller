@@ -27,7 +27,7 @@ public:
 	//bool loadConfig(const std::string& cfg);
 	void render();
 	void renderZone(int zoneIndex);
-	void renderBitmap(ALLEGRO_BITMAP *bitmap, long x, long y);
+	void renderBitmap(ALLEGRO_BITMAP *bitmap, long x, long y, long height);
 	void animate();
 	void animateZone(int zoneIndex);
 	bool collidedWith(Object& obj);
