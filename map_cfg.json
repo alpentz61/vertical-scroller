@@ -1,10 +1,14 @@
 [
-	{
-
-	 "x":3,"y":4,"type":"Switch"
-	},
-	{
-
-	 "x":8,"y":12,"type":"Firewall"
-	}
+	{"x":100,"y":400,"type":"Honeypot"},
+	{"x":650,"y":400,"type":"Honeypot"},
+  {"x":0,"y":650,"type":"Firewall"},
+  {"x":0,"y":900,"type":"Honeypot"},
+  {"x":600,"y":900,"type":"Honeypot"},
+  {"x":120,"y":1100,"type":"Honeypot"},
+  {"x":600,"y":1100,"type":"Honeypot"},
+  {"x":0,"y":1400,"type":"Switch"},
+  {"x":200,"y":1800,"type":"Scanner"},
+  {"x":0,"y":2000,"type":"Scanner"},
+  {"x":0,"y":2300,"type":"Firewall"},
+  {"x":350,"y":2500,"type":"Flag"}
 ]

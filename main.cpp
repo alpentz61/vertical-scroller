@@ -237,11 +237,14 @@ int main(int argc, char **argv)
          //Animate the player
          player_obj.animate();
 
-         //Render the player if they haven't been killed
-         if (!player_obj.isKilled()){
+         //Render player while game is on going
+         if (!gameOver){
            player_obj.render();
          }
-         else {
+
+         //End the game if the player is killed or wins
+         if (player_obj.isKilled() || player_obj.hasWon()){
+           playerWins = player_obj.hasWon();
            gameOver = true;
          }
 

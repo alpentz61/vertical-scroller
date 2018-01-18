@@ -26,7 +26,8 @@ typedef enum{
   SWITCH,
   SCANNER,
   HONEYPOT,
-  FIREWALL
+  FIREWALL,
+  FLAG
 }ObjectType;
 
 class Vector {
@@ -69,6 +70,8 @@ public:
    void honeypotCatch(Honeypot *pot);
    bool isKilled();
    void kill();
+   bool hasWon();
+   void win();
    bool moveUp();
    bool moveDown();
    bool moveLeft();
@@ -76,6 +79,7 @@ public:
    void setXLocked(bool locked);
    bool xLocked;
    bool killed;
+   bool won;
    bool isCaught;
    int chaseTimer;
    Honeypot *honeypot;
@@ -124,11 +128,11 @@ public:
   long y2_disp;
   bool movingOut;
 };
-/*
+
 class Flag : public Object {
 public:
   Flag();
-  virtual bool collidedWith(Object)
-};*/
+  virtual bool collidedWith(Object *other);
+};
 
 #endif

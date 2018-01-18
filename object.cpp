@@ -49,7 +49,7 @@ void Object::clearCollisions(){
    collList.clear();
 }
 
-Player::Player():Object(PLAYER),xLocked(false),killed(false),isCaught(false){}
+Player::Player():Object(PLAYER),xLocked(false),killed(false),won(false),isCaught(false){}
 void Player::animate(){
    if (isCaught){
       //Move towards the honeypot
@@ -79,6 +79,12 @@ bool Player::isKilled(){
 }
 void Player::kill(){
    killed = true;
+}
+bool Player::hasWon(){
+  return won;
+}
+void Player::win(){
+  won = true;
 }
 bool Player::moveUp(){
    if (!isCaught){
@@ -330,4 +336,22 @@ void Firewall::animate(){
       movingOut = true;
     }
   }
+}
+
+Flag::Flag():Object(FLAG){}
+bool Flag::collidedWith(Object *other){
+  Player *player = dynamic_cast<Player*>(other);
+  if (player == NULL){
+    return false;
+  }
+  //Detect win condition on hitting the flag:
+  if (x < (player->x + player->width) &&
+     (x + width) > player->x        &&
+     y < (player->y + player->height) &&
+     (y + height) > player->y
+     ){
+     player->win();
+     return true;
+  }
+  return false;
 }

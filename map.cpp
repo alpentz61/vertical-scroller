@@ -14,74 +14,51 @@ bool Map::initialize(){
      return false;
    }
 
-   //Create game objects
-   //honeypot:
-   const int NUM_POTS = 16;
-   Honeypot pot_objects[NUM_POTS];
-   for (int i=0; i<NUM_POTS; i++){
-      pot_objects[i].setBitmapHwnd(honeypot_bitmap);
-      pot_objects[i].map = this;
+   for (std::list<ObjectConfig>::iterator it = config.begin(); it != config.end();it++){
+     ObjectConfig cfg = (*it);
+     if (cfg.type.compare("Switch")==0){
+       //network switch
+       Switch *nwSwitch = new Switch;
+       nwSwitch->setBitmapHwnd(switch_bitmap);
+       nwSwitch->map = this;
+       nwSwitch->x = cfg.x;
+       nwSwitch->y = cfg.y;
+       nwSwitch->font = font;
+       objs.push_back(nwSwitch);
+     }
+     else if (cfg.type.compare("Scanner")==0){
+       Scanner *scanner = new Scanner;
+       scanner->setBitmapHwnd(scanner_bitmap);
+       scanner->map = this;
+       scanner->x = cfg.x;
+       scanner->y= cfg.y;
+       objs.push_back(scanner);
+     }
+     else if (cfg.type.compare("Honeypot")==0){
+       Honeypot *honeypot = new Honeypot;
+       honeypot->setBitmapHwnd(honeypot_bitmap);
+       honeypot->map = this;
+       honeypot->x = cfg.x;
+       honeypot->y = cfg.y;
+       objs.push_back(honeypot);
+     }
+     else if (cfg.type.compare("Firewall")==0){
+       Firewall *firewall = new Firewall;
+       firewall->setBitmapHwnd(firewall_bitmap);
+       firewall->map = this;
+       firewall->x = cfg.x;
+       firewall->y = cfg.y;
+       objs.push_back(firewall);
+     }
+     else if (cfg.type.compare("Flag")==0){
+       Flag *flag = new Flag;
+       flag->setBitmapHwnd(flag_bitmap);
+       flag->map = this;
+       flag->x = cfg.x;
+       flag->y = cfg.y;
+       objs.push_back(flag);
+     }
    }
-   pot_objects[0].x = 100;
-   pot_objects[0].y = 400;
-   pot_objects[1].x = 600;
-   pot_objects[1].y = 400;
-   pot_objects[2].x = 0;
-   pot_objects[2].y = 800;
-   pot_objects[3].x = 700;
-   pot_objects[3].y = 800;
-   pot_objects[4].x = 0;
-   pot_objects[4].y = 1000;
-   pot_objects[5].x = 200;
-   pot_objects[5].y = 1200;
-   pot_objects[6].x = 400;
-   pot_objects[6].y = 1400;
-   pot_objects[7].x = 600;
-   pot_objects[7].y = 1900;
-   pot_objects[8].x = 0;
-   pot_objects[8].y = 1900;
-   pot_objects[9].x = 100;
-   pot_objects[9].y = 1900;
-   pot_objects[10].x = 200;
-   pot_objects[10].y = 1900;
-   pot_objects[11].x = 300;
-   pot_objects[11].y = 2200;
-   pot_objects[12].x = 400;
-   pot_objects[12].y = 2200;
-   pot_objects[13].x = 500;
-   pot_objects[13].y = 2200;
-   pot_objects[14].x = 100;
-   pot_objects[14].y = 2500;
-   pot_objects[15].x = 600;
-   pot_objects[15].y = 2500;
-   for (int i=0; i<NUM_POTS; i++){
-      Honeypot *honeypot = new Honeypot;
-      *honeypot = pot_objects[i];
-      objs.push_back(honeypot);
-   }
-
-   //network switch
-   Switch *nwSwitch = new Switch;
-   nwSwitch->setBitmapHwnd(switch_bitmap);
-   nwSwitch->map = this;
-   nwSwitch->x = 0;
-   nwSwitch->y = 1600;
-   nwSwitch->font = font;
-   objs.push_back(nwSwitch);
-
-   Scanner *scanner = new Scanner;
-   scanner->setBitmapHwnd(scanner_bitmap);
-   scanner->map = this;
-   scanner->x = 0;
-   scanner->y= 1000;
-   objs.push_back(scanner);
-
-   Firewall *firewall = new Firewall;
-   firewall->setBitmapHwnd(firewall_bitmap);
-   firewall->map = this;
-   firewall->x = 0;
-   firewall->y = 800;
-   objs.push_back(firewall);
 
    //Paritition the objects into zones
    for (std::list<Object*>::iterator it = objs.begin(); it != objs.end(); it++){
